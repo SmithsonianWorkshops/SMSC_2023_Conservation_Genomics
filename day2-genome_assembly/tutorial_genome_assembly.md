@@ -8,7 +8,7 @@
 ### 2. Trimming adapters with TrimGalore! 
 * PacBio data will be error-corrected solely by the assembler, but Illumina data trimming and thinning are common.
 * Most assemblers these days don't want you to trim/thin for quality before assembling, but trimming is important for downstream applications. TrimGalore will auto-detect what adapters are present and remove very low quality reads (quality score <20) by default.  
-* Create a job file to trim adapters and very low quality reads for the Illumina data here: ```/scratch/genomics/dikowr/siskin_raw_data/illumina_raw```
+* Create a job file to trim adapters and very low quality reads for the Illumina data here: ```/scratch/genomics/dikowr/cloud_leopard_data/illumina_raw```
 	+ **command**: ```trim_galore --paired --retain_unpaired <FILE_1.fastq> <FILE_2.fastq>```  
 	+ **module**: ```bio/trim_galore```
 	+ You can then run FastQC again to see if anything has changed.
@@ -21,7 +21,7 @@
 * To run Genomescope, first you need to generate a Jellyfish histogram.
 
 * You'll need two job files for Jellyfish, one to count the kmers and the second to generate a histogram to give to Genomescope: 
-* Here is a copy of the Red Siskin Illumina data: ```/scratch/genomics/dikowr/cloud_leopardd_raw_data/illumina_trimmed```
+* Here is a copy of the Cloud Leopard Illumina data: ```/scratch/genomics/dikowr/cloud_leopardd_raw_data/illumina_trimmed```
 	+ Hint: don't copy these data to your own space.
 
 * First job file: kmer count:
@@ -40,6 +40,7 @@
 
 * Download the histogram to your computer (e.g. using ffsend again), and put it in the Genomescope webservice: [Genomescope](http://qb.cshl.edu/genomescope/)
 
+* let's run the analysis the same analysis with the HiFi PacBio data.
 
 ### 4. Hifiasm Assembly
 

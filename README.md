@@ -1,4 +1,4 @@
-# SMSC_2023_Conservation_Genomics
+# SMSC 2023 Conservation Genomics
 
 We will add important links to this page throughout the course. Readings will be on Dropbox and questions can be asked during class or in Slack.
 

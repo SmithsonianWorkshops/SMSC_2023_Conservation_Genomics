@@ -1,5 +1,5 @@
 ### 1. Running FastQC on raw data
-* FastQC is a program that can quickly scan your raw data to help figure out if there are adapters or low quality reads present. Create a job file to run FastQC on one of the fastq files here: ```/data/genomics/workshops/smsc_2023/```
+* FastQC is a program that can quickly scan your raw data to help figure out if there are adapters or low quality reads present. Create a job file to run FastQC on one of the fastq files here: ```/data/genomics/workshops/smsc_2023/clouded_leopard_illumina```
 	+ **module**: ```bio/fastqc```
 	+ **command**: ```fastqc <FILE.fastq>```
 	+ after your job finishes, find the results and download some of the images, e.g. ```per_base_quality.png``` to your local machine using ffsend (load ```bio/ffsend``` module) and then the command ```ffsend upload <FILE>```.
@@ -22,7 +22,7 @@
 
 * You'll need two job files for Jellyfish, one to count the kmers and the second to generate a histogram to give to Genomescope: 
 * Here is a copy of the Cloud Leopard Illumina data: ```/data/genomics/workshops/smsc_2023/clouded_leopard_illumina```
-	+ Hint: don't copy these data to your own space.
+	+ Hint: don't copy these data to your own space - they are very big.
 
 * First job file: kmer count:
 	+ Module: ```bio/jellyfish```
@@ -44,7 +44,7 @@
 
 ### 4. Hifiasm Assembly
 
-Hifiasm is a fast haplotype-resolved de novo assembler for PacBio HiFi reads. it can produce partially phased assemblies of great quality. Hifiasm can use trio (Parental) short reads data or Hi-C data to produce haplotype-resolved assemblies.
+Hifiasm is a fast haplotype-resolved de novo assembler for PacBio HiFi reads. It can produce partially phased assemblies of great quality. Hifiasm can use trio (Parental) short reads data or Hi-C data to produce haplotype-resolved assemblies.
 
 #### Assembly using only HiFi data
 

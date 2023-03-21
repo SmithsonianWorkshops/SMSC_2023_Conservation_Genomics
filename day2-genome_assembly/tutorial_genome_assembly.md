@@ -1,7 +1,7 @@
 ### 1. Running FastQC on raw data
 * FastQC is a program that can quickly scan your raw data to help figure out if there are adapters or low quality reads present. Create a job file to run FastQC on one of the fastq files here: ```/data/genomics/workshops/smsc_2023/clouded_leopard_illumina```
 	+ **module**: ```bio/fastqc```
-	+ **command**: ```fastqc <FILE.fastq>```
+	+ **command**: ```fastqc <FILE.fastq> -o .```
 	+ after your job finishes, find the results and download some of the images, e.g. ```per_base_quality.png``` to your local machine using ffsend (load ```bio/ffsend``` module) and then the command ```ffsend upload <FILE>```.
 
 

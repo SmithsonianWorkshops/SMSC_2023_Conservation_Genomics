@@ -5,8 +5,9 @@
  * [Folder structure](#Folder-structure)
  * [Input file](#Input-file)
  * [Run BUSCO](#Run-BUSCO)
- * [Run Blobtoolskit2](#Run-Blobtooskit2)
- * [Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker](#Masking-and-annotating-repetitive-elements-with-Repeatmodeler-and-RepeatMasker)
+ * [Run Blobtoolskit)](#Run-Blobtoolskit)
+ * [Run Blobtoolskit2](#Run-Blobtoolskit2)
+ * [Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker](#Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker)
 
 
 <!-- /TOC -->
@@ -31,13 +32,12 @@ Next, we will change directories to the genome_annot folder and we will create a
 <p>
 
 ```
-mkdir assembly busco blobtools repeat_annotation gemoma
+mkdir busco blobtools repeat_annotation gemoma
 
 ```
 If you type the command `tree`, this is what you should see:
 
 ```
-|__ assembly
 |__ busco  
 |__ blobtools
 |__ gemoma
@@ -55,15 +55,8 @@ If we follow this folder structure, we will have all the results organized by so
 ### Input file
 For this session, we will use the cloud leopard assembly. You can find this file here: `/data/genomics/workshops/smsc_2023/mNeoNeb1.pri.cur.20220520.fasta.gz`
 
-Copy this file to your assembly folder and gunzip the file.
 
-```
-cp /data/genomics/workshops/smsc_2023/mNeoNeb1.pri.cur.20220520.fasta.gz /scratch/genomics/your_username/assembly/
-cd /scratch/genomics/your_username/assembly/
-gunzip mNeoNeb1.pri.cur.20220520.fasta.gz
-```
-
-**If you want to run thing quckly you can run the programs by Extracting some scaffolds**
+**If you want to run thing quickly you can run the programs by Extracting some scaffolds**
 <details><summary>SOLUTION</summary>
 <p>
 
@@ -97,7 +90,7 @@ BUSCO (Simão et al. 2015; Waterhouse et al. 2017) assesses completeness by sear
 - Commands:
 
 ```
-busco  -o clouded_leopard -i ../assembly/mNeoNeb1.pri.cur.20220520.fasta -l mammalia_odb10 -c $NSLOTS -m genome
+busco  -o clouded_leopard -i path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -l mammalia_odb10 -c $NSLOTS -m genome
 ```
 
 ##### Explanation:
@@ -110,9 +103,18 @@ busco  -o clouded_leopard -i ../assembly/mNeoNeb1.pri.cur.20220520.fasta -l mamm
 
 ```
 
+##### *** IMPORTANT ***
+
+BUSCO doesn't have an option to redirect the output to a different folder. For that reason, we will submit the BUSCO job from the `busco` folder. Assuming you just created the job file in the `jobs` folder:
+
+```
+cd ../busco
+qsub busco_cloud_leopard.job
+```
+
 **Note about Databases:**
 
-If you do not have internet connection on the node where running the software you can download the database and run the program offline. For instance, to download the Mammalia database you can use the command `wget` and extract it.It is important to dowlod and untar the folder on your busco folder. Let's `cd` to the directory `busco` first.
+If you do not have internet connection on the node where running the software you can download the database and run the program offline. For instance to download the Mammalia database you can use the command `wget` and extract it.It is important to dowlod and untar the folder on your busco folder. Let's `cd` to the directory `busco` first.
 
 	wget https://busco-data.ezlab.org/v5/data/lineages/mammalia_odb10.2021-02-19.tar.gz
 	tar -zxf aves_odb9.tar.gz
@@ -120,12 +122,14 @@ If you do not have internet connection on the node where running the software yo
 The command to run busco will have to change to: 
 
 ```
-busco  -o clouded_leopard -i ../assembly/mNeoNeb1.pri.cur.20220520.fasta -l mammalia_odb10 -c $NSLOTS -m genome --offline --download_path /path/to/datasets
+busco  -o clouded_leopard -i /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -l mammalia_odb10 -c $NSLOTS -m genome --offline --download_path /path/to/datasets
 ```
 
-### Run Bloobtools2
 
-BlobTools2 is a command line tool designed for interactive quality assessment of genome assemblies and contaminant detection and filtering.
+### Run Bloobtools
+
+BlobTools is a command line tool designed for interactive quality assessment of genome assemblies and contaminant detection and filtering.
+
 
 #### Preparing files for blobtools2
 
@@ -141,7 +145,7 @@ First, you need to blast your assembly to know nt databases. For this we will us
 - Commands:
 
 ```
-blastn -db /data/genomics/db/ncbi/db/latest_v4/nt/nt -query ../assembly/mNeoNeb1.pri.cur.20220520.fasta -outfmt "6 qseqid staxids bitscore std" -max_target_seqs 20 -max_hsps 1 -evalue 1e-20 -num_threads $NSLOTS -out clouded_leopard_blast.out
+blastn -db /data/genomics/db/ncbi/db/latest_v4/nt/nt -query /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -outfmt "6 qseqid staxids bitscore std" -max_target_seqs 20 -max_hsps 1 -evalue 1e-20 -num_threads $NSLOTS -out clouded_leopard_blast.out
 ```
 
 ##### Explanation:
@@ -172,7 +176,7 @@ Second, you need to map raw reads to the genome assembly. We will use minimap2 f
 - Commands:
 
 ```
-minimap2 -ax map-hifi -t 20 ../assembly/mNeoNeb1.pri.cur.20220520.fasta  /path/to_each/hifi.fastq | samtools sort -@20 -O BAM -o cloud_leopard_sorted.bam -
+minimap2 -ax map-hifi -t 20 /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta  /path/to_each/hifi.fastq | samtools sort -@20 -O BAM -o cloud_leopard_sorted.bam -
 ```
 
 ##### Explanation:
@@ -188,6 +192,63 @@ sort: sort command
 -o: name of the outputformat
 ```
 
+#### Creating blobtools database
+
+Now that we have the blast and mapping results we can create the BlobTools database. This can take a few minutes depending on how much coverage you have for your genome assembly.
+
+- Queue: medium
+- PE: multi-thread
+- Number of CPUs: 1
+- Memory: 6G (6G per CPU, 6G total)
+- Module: `module load bio/blobtools`
+
+
+- Commands:
+
+```
+blobtools create -i /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -b clouded_leopard_mapped.bam -t clouded_leopard_blast.out -o my_first_blobplot
+```
+
+##### Explanation:
+
+```
+-i: genome assembly (fasta)
+-b: mapped reads to genome assembly (bam)
+-t: hits output file from a search algorith (i.e blastn). hit file is a TSV file which links sequence IDs in a assembly to NCBI TaxIDs, with a given score.
+-o: path and/or name of the blobtools database.
+
+```
+
+
+#### blob and cov plots
+
+Once you have a BlobDir database, we can plot the blobplot and the covplot. Since this is not computationally speaking intense, we can use an interactive node to run blobtools plot command.
+
+```
+qrsh
+module load bio/blobtools
+mkdir plots
+blobtools plot -i my_first_blobplot.blobDB.json -o plots/
+
+```
+
+This comand generates three files:
+
+* my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.bam0.png
+* my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.read_cov.bam0.png
+* my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.stats.txt
+
+Please download these files to your machine. Remember that you can used the ffsend module.
+
+* Is your genome assembly contaminated?
+* if yes, What taxa are contaminant of your assembly?
+* All your reads are mapping to your genome?
+
+
+### Run Bloobtools2
+
+Similar to blobtools 1.1, blobtools2 requires an assembly (Fasta), blast hit file (blast.out) and a mapping reads file (bam). You can see above on blobtools section how to create those files.
+
 #### Creating blobtools2 data base
 
 Now that we have the blast and mapping results we can create the BlobTools2 database. The minimum requirement to create a new database with BlobTools2 is an assembly FASTA file. This runs very fast so we do can use an interactive node.
@@ -195,7 +256,7 @@ Now that we have the blast and mapping results we can create the BlobTools2 data
 ```
 qrsh -pe mthread 3
 module load bio/blobtools/2.6.3 
-blobtools create --fasta ../assembly/mNeoNeb1.pri.cur.20220520.fasta clouded_leopard_blobt_nb
+blobtools create --fasta /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta clouded_leopard_blobt_nb
 ```
 
 ##### Explanation:
@@ -257,12 +318,13 @@ The cool thing about this is that you can interact with the results and visualiz
 ### Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker
 
 Repeatmodeler is a repeat-identifying software that can provide a list of repeat family sequences to mask repeats in a genome with RepeatMasker. Repeatmasker is a program that screens DNA sequences for interspersed repeats and low complexity DNA sequences. the output of the program is a detailed annotation of the repeats that are present in the query sequence as well as a modified version of the query sequence in which all the annotated repeats have been masked. 
+
 Things to consider with Repeatmodeler software is that it can take a long time with large genomes (>1Gb==>96hrs on a 16 cpu node). You also need to set the correct parameters in repeatmodeler so that you get repeats that are not only grouped by family, but are also annotated.
 
 Repeatmodeler http://www.repeatmasker.org/RepeatModeler/  
 RepeatMasker http://www.repeatmasker.org/RMDownload.html
 
-The first step to run Repeatmodeler is that you need to build a Database. The Build Database step is quick (several seconds at most).
+The first step to run Repeatmodeler is that you need to build a Database. The Build Database step is quick (several seconds at most). you can ither use and interactive node or a job file.
 
 #### Job file: repeatmodeler_database.job
 - Queue: medium
@@ -273,7 +335,7 @@ The first step to run Repeatmodeler is that you need to build a Database. The Bu
 - Commands:
 
 ```
-BuildDatabase -name cloud_leopard ../assembly/mNeoNeb1.pri.cur.20220520.fasta
+BuildDatabase -name cloud_leopard /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta
 # usage:BuildDatabase -name {database_name} {genome_file-in_fasta_format}
 ```
 ##### Explanation:
@@ -283,7 +345,7 @@ genome file in fasta format
 ```
 
 ##### Output files:
-- Database folder with the structure to populate and run repeatmodeler program.
+- several files with a specific structure to be populate and used by repeatmodeler command.
 
 The second step is two actually run RepeatModeler. Again this can take several days depending on the genome size.
 
@@ -297,7 +359,8 @@ The second step is two actually run RepeatModeler. Again this can take several d
 
 ```
 # Usage: RepeatModeler -database {database_name} -pa {number of cores} -LTRStruct > out.log
-RepeatModeler -database cloud_leopard -pa 36 -LTRStruct -engine ncbi > out.log
+RepeatModeler -database clouded_leopard -pa 36 -engine ncbi > repeatmodeler_cl_out.log
+
 ```
 
 ##### Explanation:
@@ -305,11 +368,12 @@ RepeatModeler -database cloud_leopard -pa 36 -LTRStruct -engine ncbi > out.log
 -database: The prefix name of a XDF formatted sequence database containing the genomic sequence to use when building repeat models.
 -pa: number of cpus
 -engine: The name of the search engine we are using. I.e abblast/wublast or ncbi (rmblast version).
+#Note the new version of repeatmodeler calls another program called LTRStruct.
 -LTRStruct: enables the optional LTR structural finder.
 ```
 
 ##### Output files:
-- consensi.fa.classified: complete database to be in RepeatMasker.
+- consensi.fa.classified: complete database to be used in RepeatMasker.
 
 The last step to get a repeat annotation is to run ReapeatMasker. 
 
@@ -317,15 +381,15 @@ The last step to get a repeat annotation is to run ReapeatMasker.
 #### Job file: repeatmasker_cloud_leopard.job
 - Queue: high
 - PE: multi-thread
-- Number of CPUs: 36
+- Number of CPUs: 30
 - Memory: 10G
-- Module: `module load bioi/repeatmodeler`
+- Module: `module load bio/repeatmodeler`
 - Commands:
 
 ```
-# usage: RepeatMasker -pa 36 -gff -lib {consensi_classified} -dir {dir_name} {genome_in_fasta}
+# usage: RepeatMasker -pa 30 -gff -lib {consensi_classified} -dir {dir_name} {genome_in_fasta}
 
-RepeatMasker -pa $NSLOTS -xsmall -gff -lib consensi.fa.classified -dir ../repeatmasker/cloud_leopard_RM ../assembly/cloud_leopard_10largest.fasta 
+RepeatMasker -pa $NSLOTS -xsmall -gff -lib consensi.fa.classified -dir ../repeatmasker /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta
 ```
 ##### Explanation:
 ```
@@ -337,6 +401,195 @@ RepeatMasker -pa $NSLOTS -xsmall -gff -lib consensi.fa.classified -dir ../repeat
 ```
 
 ##### Output files:
-- cloud_leopard_10largest.fasta.tbl: summary information about the repetitive elements
-- cloud_leopard_10largest.fasta.masked: masked assembly (in our case, softmasked)
-- cloud_leopard_10largest.fasta.out: detailed information about the repetitive elements, including coordinates, repeat type and size.
+- mNeoNeb1.pri.cur.20220520.fasta.tbl: summary information about the repetitive elements
+- mNeoNeb1.pri.cur.20220520.masked.fasta: masked assembly (in our case, softmasked)
+- mNeoNeb1.pri.cur.20220520.fasta.out: detailed information about the repetitive elements, including coordinates, repeat type and size.
+
+
+If you do not want to run Repeatmodeler for discovery of new possible repeat clases you can use Repeatmasker with available repeatdatabases.
+lets create a new folder to run this job and to hold the results.
+
+
+
+#### Job file: repeatmasker_alone.job
+- Queue: medium
+- PE: multi-thread
+- Number of CPUs: 10
+- Memory: 4G
+- Module: `module load bio/repeatmasker`
+- Commands:
+
+```
+RepeatMasker -species mammalia -pa $NSLOTS -xsmall -dir ../repeatmasker /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta
+
+```
+##### Explanation:
+```
+-species: species/taxonomic group repbase database (browse available species here: 
+ https://www.girinst.org/repbase/update/browse.php)
+-pa: number of cpus
+-xsmall: softmasking (instead of hardmasking with N)
+-dir ../repeatmasker: writes the output to the directory repeatmasker
+
+```
+
+##### Output files:
+- mNeoNeb1.pri.cur.20220520.fasta.tbl: summary information about the repetitive elements
+- mNeoNeb1.pri.cur.20220520.fasta.masked: masked assembly (in our case, softmasked)
+- mNeoNeb1.pri.cur.20220520.fasta.out: detailed information about the repetitive elements, including coordinates, repeat type and size.
+
+##### About the species:
+- You can use the script `queryTaxonomyDatabase.pl` from the RepeatMasker module to search for your species of interest. 
+
+	`queryTaxonomyDatabase.pl -species cat`
+	
+	**Output:**
+	
+	```
+	RepeatMasker Taxonomy Database Utility
+	======================================
+	Species = cat
+	Lineage = Felis catus
+	          Felis
+	          Felinae
+	          Felidae
+	          Feliformia
+	          Carnivora
+	          Laurasiatheria
+	          Boreoeutheria
+	          Eutheria
+	          Theria Mammalia
+	          Mammalia
+	          Amniota
+	          Tetrapoda
+	          Dipnotetrapodomorpha
+	          Sarcopterygii
+	          Euteleostomi
+	          Teleostomi
+	          Gnathostomata vertebrate
+	          Vertebrata Metazoa
+	          Craniata chordata
+	          Chordata
+	          Deuterostomia
+	          Bilateria
+	          Eumetazoa
+	          Metazoa
+	          Opisthokonta
+	          Eukaryota
+	          cellular organisms
+	          root
+	
+	```	
+
+	Those results give you an idea of how your taxon of interest is hierarchically organized inside the repeat database. 
+	
+
+- You can also see the repeat library available for your species.
+
+	`queryRepeatDatabase.pl -species cat`
+	
+This will actually print the entire repeat library in fasta format, which is not very practical. To count how many entries exist, you can pipe that output and use grep to count the number of sequences.
+	
+	`queryRepeatDatabase.pl -species cat | grep -c ">" `
+
+	**Output:**
+	
+	```
+	queryRepeatDatabase
+	===================
+	RepeatMasker Database: RepeatMaskerLib.embl
+	RepeatMasker Combined Database: Dfam_3.0
+	Species: cat ( felis catus )
+	Warning...unknown stuff <
+	>
+	782
+	```
+	
+	The thing is: this result doesn't necessarily mean that there are 782 repetitive elements specifically for cat. Let's test it with Feliformia:
+
+	`queryRepeatDatabase.pl -species Feliformia | grep -c ">"`
+	
+	**Results:**
+	
+	```
+	queryRepeatDatabase
+	===================
+	RepeatMasker Database: RepeatMaskerLib.embl
+	RepeatMasker Combined Database: Dfam_3.0
+	Species: Feliformia ( feliformia )
+	Warning...unknown stuff <
+	>
+	782
+	```
+	
+Same number, right?
+Here's what this script is giving you: it will use the most closely related library within the taxonomic hierarchy for that taxon. So, there's nothing specific for cat that is not present in the Feliformia library. Dr. Vanessa Gonzalez wrote this cool script that searches for all entries in the taxonomy. The script can be found in `/data/genomics/workshops/STRI2020/Repbase_RepeatQuery_Taxonomy_MTNT.sh` and it will output a file with a list of all taxonomy levels and the number of repeats in each library. To run this script, copy it to your `repmasker` folder and do:
+
+`./Repbase_RepeatQuery_Taxonomy_MTNT.sh cat`
+
+This script will output two files: `cat_tax.txt` (taxonomy) and `cat_RepBase_RepQuery.txt` (the file we actually want). If we use the command `cat` to print the contents of the file `cat_RepBase_RepQuery.txt`, here's what we will see:
+
+**Output:**
+
+```
+Taxonomic query = 'Felis catus'
+Repeats in RepBase = 782
+Taxonomic query = 'Felis'
+Repeats in RepBase = 782
+Taxonomic query = 'Felinae'
+Repeats in RepBase = 782
+Taxonomic query = 'Felidae'
+Repeats in RepBase = 782
+Taxonomic query = 'Feliformia'
+Repeats in RepBase = 782
+Taxonomic query = 'Carnivora'
+Repeats in RepBase = 782
+Taxonomic query = 'Laurasiatheria'
+Repeats in RepBase = 782
+Taxonomic query = 'Boreoeutheria'
+Repeats in RepBase = 1883
+Taxonomic query = 'Eutheria'
+Repeats in RepBase = 1888
+Taxonomic query = 'Theria Mammalia'
+Repeats in RepBase = 1888
+Taxonomic query = 'Mammalia'
+Repeats in RepBase = 1888
+Taxonomic query = 'Amniota'
+Repeats in RepBase = 2023
+Taxonomic query = 'Tetrapoda'
+Repeats in RepBase = 2023
+Taxonomic query = 'Dipnotetrapodomorpha'
+Repeats in RepBase = 2023
+Taxonomic query = 'Sarcopterygii'
+Repeats in RepBase = 2023
+Taxonomic query = 'Euteleostomi'
+Repeats in RepBase = 3915
+Taxonomic query = 'Teleostomi'
+Repeats in RepBase = 3915
+Taxonomic query = 'Gnathostomata vertebrate'
+Repeats in RepBase = 3915
+Taxonomic query = 'Vertebrata Metazoa'
+Repeats in RepBase = 3915
+Taxonomic query = 'Craniata chordata'
+Repeats in RepBase = 3915
+Taxonomic query = 'Chordata'
+Repeats in RepBase = 3915
+Taxonomic query = 'Deuterostomia'
+Repeats in RepBase = 3915
+Taxonomic query = 'Bilateria'
+Repeats in RepBase = 6244
+Taxonomic query = 'Eumetazoa'
+Repeats in RepBase = 6244
+Taxonomic query = 'Metazoa'
+Repeats in RepBase = 6244
+Taxonomic query = 'Opisthokonta'
+Repeats in RepBase = 6244
+Taxonomic query = 'Eukaryota'
+Repeats in RepBase = 6244
+Taxonomic query = 'cellular organisms'
+Repeats in RepBase = 6244
+Taxonomic query = 'root'
+Repeats in RepBase = 6244
+```
+
+As you can see, the number of repetitive elements in the library is the same until Laurasiatheria (which includes carnivorans, ungulates, shrews, bats, whales, pangolins...). Mammals are very well represented compared to other groups, so this is a good thing to keep in mind when choosing a species for your analysis.

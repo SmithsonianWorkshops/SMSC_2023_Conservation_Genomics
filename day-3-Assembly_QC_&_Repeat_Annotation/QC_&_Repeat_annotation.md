@@ -5,10 +5,10 @@
  * [Folder structure](#Folder-structure)
  * [Input file](#Input-file)
  * [Run BUSCO](#Run-BUSCO)
- * [Run Blobtoolskit](#Run-Blobtoolskit)
- * [Run Blobtoolskit2](#Run-Blobtoolskit2)
+ * [Run Blobtoolkit](#Run-Blobtoolkit)
+ * [Run Blobtoolkit2](#Run-Blobtoolkit2)
  * [Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker](#Masking-and-annotating-repetitive-elements-with-Repeatmodeler-and-RepeatMasker)
- * [Runing Gemoma](#Runing-Gemoma)
+ * [Running GeMoMa](#Running-GeMoMa)
 
 
 <!-- /TOC -->
@@ -54,7 +54,7 @@ If we follow this folder structure, we will have all the results organized by so
 **Submitting jobs**: With this folder structure, we will save all the job files with each program folder and the job files will be submitted from there.   
 
 ### Input file
-For this session, we will use the cloud leopard assembly. You can find this file here: `/data/genomics/workshops/smsc_2023/mNeoNeb1.pri.cur.20220520.fasta.gz`
+For this session, we will use the new cloud leopard assembly. You can find this file here: `/data/genomics/workshops/smsc_2023/mNeoNeb1.pri.cur.20220520.fasta`
 
 
 **If you want to run thing quickly you can run the programs by Extracting some scaffolds**
@@ -118,9 +118,9 @@ qsub busco_cloud_leopard.job
 If you do not have internet connection on the node where running the software you can download the database and run the program offline. For instance to download the Mammalia database you can use the command `wget` and extract it.It is important to dowlod and untar the folder on your busco folder. Let's `cd` to the directory `busco` first.
 
 	wget https://busco-data.ezlab.org/v5/data/lineages/mammalia_odb10.2021-02-19.tar.gz
-	tar -zxf aves_odb9.tar.gz
+	tar -zxf mammalia_odb10.2021-02-19.tar.gz
 
-The command to run busco will have to change to: 
+In this case, the command to run busco will have to change to: 
 
 ```
 busco  -o clouded_leopard -i /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -l mammalia_odb10 -c $NSLOTS -m genome --offline --download_path /path/to/datasets
@@ -134,7 +134,7 @@ BlobTools is a command line tool designed for interactive quality assessment of 
 
 #### Preparing files for blobtools2
 
-First, you need to blast your assembly to know nt databases. For this we will used blastn program. 
+First, you need to blast your assembly to know nt databases. For this we will use blastn. 
 
 
 #### Job file: blast_clouded_leopard.job
@@ -169,10 +169,7 @@ Second, you need to map raw reads to the genome assembly. We will use minimap2 f
 - Memory: 6G (6G per CPU, 60G total)
 - Module: 
 ```
-  module load bio/samtools/1.9 
-  module load bio/tools/conda     
-  start-conda  
-  conda activate minimap2
+  module load bio/minimap2
 ```
 - Commands:
 
@@ -239,16 +236,16 @@ This comand generates three files:
 * my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.read_cov.bam0.png
 * my_first_blobplot.blobDB.json.bestsum.phylum.p7.span.100.blobplot.stats.txt
 
-Please download these files to your machine. Remember that you can used the ffsend module.
+Please download these files to your machine. Remember that you can use the ffsend module.
 
 * Is your genome assembly contaminated?
-* if yes, What taxa are contaminant of your assembly?
+* If yes, What taxa are contaminant of your assembly?
 * All your reads are mapping to your genome?
 
 
 ### Run Bloobtools2
 
-Similar to blobtools 1.1, blobtools2 requires an assembly (Fasta), blast hit file (blast.out) and a mapping reads file (bam). You can see above on blobtools section how to create those files.
+Similar to blobtools 1.1, blobtools2 requires an assembly (fasta), blast hit file (blast.out) and a mapping reads file (bam). You can see above on blobtools section how to create those files.
 
 #### Creating blobtools2 data base
 
@@ -325,7 +322,7 @@ Things to consider with Repeatmodeler software is that it can take a long time w
 Repeatmodeler http://www.repeatmasker.org/RepeatModeler/  
 RepeatMasker http://www.repeatmasker.org/RMDownload.html
 
-The first step to run Repeatmodeler is that you need to build a Database. The Build Database step is quick (several seconds at most). you can ither use and interactive node or a job file.
+The first step to run Repeatmodeler is that you need to build a Database. The Build Database step is quick (several seconds at most). you can either use an interactive node or a job file.
 
 #### Job file: repeatmodeler_database.job
 - Queue: medium
@@ -336,7 +333,7 @@ The first step to run Repeatmodeler is that you need to build a Database. The Bu
 - Commands:
 
 ```
-BuildDatabase -name cloud_leopard /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta
+BuildDatabase -name clouded_leopard /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta
 # usage:BuildDatabase -name {database_name} {genome_file-in_fasta_format}
 ```
 ##### Explanation:
@@ -426,7 +423,7 @@ RepeatMasker -species mammalia -pa $NSLOTS -xsmall -dir ../repeatmasker /path/to
 ```
 ##### Explanation:
 ```
--species: species/taxonomic group repbase database (browse available species here: 
+-species: species/taxonomic group repbase database browse available species here: 
  https://www.girinst.org/repbase/update/browse.php)
 -pa: number of cpus
 -xsmall: softmasking (instead of hardmasking with N)

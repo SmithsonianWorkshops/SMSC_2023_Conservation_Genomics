@@ -608,7 +608,7 @@ In this section, we show how to run the main modules and analysis with GeMoMa us
 * Canis familiaris (Domestic Dog)
 * Homo sapiens (Human)
 
-If you wish to download other genomes you need to search on known genome data bases or genome hubs. For instance, you can search on NCBI genome dabase and get ftp url used the following commands.
+If you wish to download other genomes you need to search on known genome databases or genome hubs. For instance, you can search on NCBI genomes and get the ftp url and download the files (gff and fasta) using wget. 
 
 <details><summary>SOLUTION</summary>
 <p>

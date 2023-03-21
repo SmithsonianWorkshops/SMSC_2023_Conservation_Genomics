@@ -612,12 +612,12 @@ If you wish to download other genomes you need to search on known genome data ba
 
 <details><summary>SOLUTION</summary>
 <p>
+
 ```
 cd /ref_genomes/
 wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/735/GCF_000001735.4_XXXX/GCF_00000XXXX_genomic.fna.gz
 wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/735/GCF_000001735.4_XXXX/GCF_00000XXXX_genomic.gff.gz
 cd ..
-
 ```
 </p>
 </details>

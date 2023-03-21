@@ -8,6 +8,7 @@
  * [Run Blobtoolskit)](#Run-Blobtoolskit)
  * [Run Blobtoolskit2](#Run-Blobtoolskit2)
  * [Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker](#Masking-and-annotating-repetitive-elements-with-Repeatmodeler-and-RepeatMasker)
+ * [Runing Gemoma](#Runing-Gemoma)
 
 
 <!-- /TOC -->
@@ -23,10 +24,10 @@ mkdir genome_qc_annotation
 
 Next, we will change directories to the genome_annot folder and we will create a several folders that we will use today and tomorrow. Here's the list of folders:
 
-- Busco
-- Bloobtools
-- Repeat_annotation
-- Gemoma
+- busco
+- bloobtools
+- repeat_annotation
+- gemoma
 
 <details><summary>SOLUTION</summary>
 <p>
@@ -593,3 +594,80 @@ Repeats in RepBase = 6244
 ```
 
 As you can see, the number of repetitive elements in the library is the same until Laurasiatheria (which includes carnivorans, ungulates, shrews, bats, whales, pangolins...). Mammals are very well represented compared to other groups, so this is a good thing to keep in mind when choosing a species for your analysis.
+
+### Run GeMoMa
+
+Gene Model Mapper (GeMoMa) is a homology-based gene prediction program. GeMoMa uses the annotation of protein-coding genes in a reference genome to infer the annotation of protein-coding genes in a target genome. Thus, GeMoMa uses amino acid and intron position conservation to create gen models. In addition, GeMoMa allows to incorporate RNA-seq evidence for splice site prediction. (see more in [GeMoMa](http://www.jstacs.de/index.php/GeMoMa-Docs)).
+
+
+In this section, we show how to run the main modules and analysis with GeMoMa using real data. We will start the genome annotation for our Clouded Leopard final genome. Since GeMoMa uses the annotation of coding genes from reference genome the first step is to download some reference genomes (taxa_assembly.fasta) with its genome annotation (taxa_annotation.gff). We have done this for you already to speed up the process. The reference genomes that we have are located here ```/data/genomics/workshops/smsc_2023/ref_genomes```. We have a total of 6 reference genomes for closely related taxa:
+
+* Neofelis nebulosa (Clouded Leopard v1)
+* Neofelis diardi
+* Felis catus (Domestic Cat)
+* Canis familiaris (Domestic Dog)
+* Homo sapiens (Human)
+
+If you wish to download other genomes you need to search on known genome data bases or genome hubs. For instance, you can search on NCBI genome dabase and get ftp url used the following commands.
+
+<details><summary>SOLUTION</summary>
+<p>
+```
+cd /ref_genomes/
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/735/GCF_000001735.4_XXXX/GCF_00000XXXX_genomic.fna.gz
+wget -c https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/735/GCF_000001735.4_XXXX/GCF_00000XXXX_genomic.gff.gz
+cd ..
+
+```
+</p>
+</details>
+
+
+In General GeMoMa workflow performs 7 stepts: Extract RNA-seq evidence (ERE), DenoiseIntrons, Extractor, external search (tblastn or mmseqs), Gene Model Mapper (GeMoMa), GeMoMa Annotation Filter (GAF), and AnnnotationFinalizer. You can run this modules one by one or you can use the GeMoMa Pipeline, which is a multi-threaded tool that can uses all compute cores on one machine. 
+
+#### Job file: busco_cloud_leopard.job
+- Queue: high
+- PE: multi-thread
+- Number of CPUs: 40
+- Memory: 10G (10G per CPU, 400G total)
+- Module: `module load bio/gemoma/1.9`
+- Commands:
+
+
+```
+set maxHeapSize 400000
+GeMoMa -Xmx400G GeMoMaPipeline threads=$NSLOTS outdir=../gemoma/ GeMoMa.Score=ReAlign AnnotationFinalizer.r=NO p=false o=true t=../assembly/mNeoNeb1.pri.cur.20220520.fasta s=own i=cat a=/pool/genomics/ariasc/SMSC_2023/ref_genomes/GCF_018350175.1_F.catus_Fca126_mat1.0_genomic.gff g=/pool/genomics/ariasc/SMSC_2023/ref_genomes/GCF_018350175.1_F.catus_Fca126_mat1.0_genomic.fna s=own i=dog a=/pool/genomics/ariasc/SMSC_2023/ref_genomes/GCF_014441545.1_ROS_Cfam_1.0_genomic.gff.gz g=/pool/genomics/ariasc/SMSC_2023/ref_genomes/GCF_014441545.1_ROS_Cfam_1.0_genomic.fna.gz s=own i=human a=/pool/genomics/ariasc/SMSC_2023/ref_genomes/GCF_000001405.40_GRCh38.p14_genomic.gff.gz g=/pool/genomics/ariasc/SMSC_2023/ref_genomes/GCF_000001405.40_GRCh38.p14_genomic.fna.gz s=own i=n_diardi a=/pool/genomics/ariasc/SMSC_2023/ref_genomes/diardi_annotation.gff  g=/pool/genomics/ariasc/SMSC_2023/ref_genomes/neofelis_diardi_masked.fasta s=own i=n_nebulosa_v1 a=/pool/genomics/ariasc/SMSC_2023/ref_genomes/hic_nebulosa_annotation.gff g=/pool/genomics/ariasc/SMSC_2023/ref_genomes/clouded_leopard_HiC.fasta
+```
+
+##### Explanation:
+```
+threads: nnumber of CPUs
+AnnotationFinalizer.r: to rename the predictions (NO/YES)
+p: obtain predicted proteines (false/true)
+o: keep and safe  individual predictions for each reference species (false/true)
+t: target genome (fasta)
+outdir: path and prefix of output directory
+i: allows to provide an ID for each reference organism
+g: path to individual reference genome
+a: path to indvidual annotation genome
+```
+
+**Tips and Notes about GeMoMa PipeLine:**
+
+* Depending on your default settings and the amount of data, you might have to increase the memory that can be used by setting the VM arguments for initial and maximal heap size, e.g., -Xms200G -Xmx400G.
+* GeMoMaPipeline writes its version and all parameters that are no files at the beginning of the predicted annotation. This allows to check parameters at any time point.
+* If GeMoMaPipline crashes with an Exception, the parameter restart can be used to restart the latest GeMoMaPipeline run, which was finished without results, with very similar parameters. This allows to avoid time-consuming steps like the search that were successful in the latest GeMoMaPipeline run.
+* If you like to use mapped RNA-seq data, you have to use the parameters r and ERE.m:
+
+```
+GeMoMa -Xmx400G GeMoMaPipeline  threads=$NSLOTS AnnotationFinalizer.r=NO p=false o=true t=clouded_leopard.fna.gz outdir=output/ r=MAPPED ERE.m=<SAM/BAM> a=NCBI/GCF_XXXX_genomic.gff.gz g=NCBI/GCF_XXXX_genomic.fna.gz
+
+```
+* If you like to combine GeMoMa predictions with given external annotation external.gff, e.g., from ab-initio gene prediction, you can use the parameter e:
+
+```
+GeMoMa -Xmx400G GeMoMaPipeline threads=$NSLOTS AnnotationFinalizer.r=NO o=true t=clouded_leopard.fna.gz outdir=output/ 
+p=true i=<REFERENCE_ID> a=NCBI/GCF_XXXX_genomic.gff.gz g=NCBI/GCF_XXXX_genomic.fna.gz ID=<EXTERNAL_ID> e=external.gff
+```
+* GeMoMa pipeline is extremely complex with many parameter for each of the module. Here is the full description of the paramenter for the pipeline script but also for each of the modules. [link to GeMoMa documentation](http://www.jstacs.de/index.php/GeMoMa-Docs)
+

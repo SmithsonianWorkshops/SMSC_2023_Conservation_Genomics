@@ -5,7 +5,7 @@
  * [Folder structure](#Folder-structure)
  * [Input file](#Input-file)
  * [Run BUSCO](#Run-BUSCO)
- * [Run Blobtoolskit)](#Run-Blobtoolskit)
+ * [Run Blobtoolskit](#Run-Blobtoolskit)
  * [Run Blobtoolskit2](#Run-Blobtoolskit2)
  * [Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker](#Masking-and-annotating-repetitive-elements-with-Repeatmodeler-and-RepeatMasker)
  * [Runing Gemoma](#Runing-Gemoma)

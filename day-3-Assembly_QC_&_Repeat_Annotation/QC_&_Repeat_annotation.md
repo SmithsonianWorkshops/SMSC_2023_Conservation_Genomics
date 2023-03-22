@@ -91,7 +91,7 @@ BUSCO (Simão et al. 2015; Waterhouse et al. 2017) assesses completeness by sear
 - Commands:
 
 ```
-busco  -o clouded_leopard -i path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -l mammalia_odb10 -c $NSLOTS -m genome
+busco -o clouded_leopard -i path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -l mammalia_odb10 -c $NSLOTS -m genome
 ```
 
 ##### Explanation:
@@ -622,11 +622,11 @@ cd ..
 
 In General GeMoMa workflow performs 7 stepts: Extract RNA-seq evidence (ERE), DenoiseIntrons, Extractor, external search (tblastn or mmseqs), Gene Model Mapper (GeMoMa), GeMoMa Annotation Filter (GAF), and AnnnotationFinalizer. You can run this modules one by one or you can use the GeMoMa Pipeline, which is a multi-threaded tool that can uses all compute cores on one machine. 
 
-#### Job file: busco_cloud_leopard.job
-- Queue: high
+#### Job file: gemoma_cloud_leopard.job
+- Queue: high memory, medium time
 - PE: multi-thread
 - Number of CPUs: 40
-- Memory: 10G (10G per CPU, 400G total)
+- Memory: 12G (12G per CPU, 480G total)
 - Module: `module load bio/gemoma/1.9`
 - Commands:
 

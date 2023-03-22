@@ -204,7 +204,7 @@ Now that we have the blast and mapping results we can create the BlobTools datab
 - Commands:
 
 ```
-blobtools create -i /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -b clouded_leopard_mapped.bam -t clouded_leopard_blast.out -o my_first_blobplot
+blobtools create -i /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -b /pool/genomics/ariasc/SMSC_2023/blobtools/clouded_leopard_mapped.bam -t /pool/genomics/ariasc/SMSC_2023/blobtools/clouded_leopard_blast.out -o my_first_blobplot
 ```
 
 ##### Explanation:

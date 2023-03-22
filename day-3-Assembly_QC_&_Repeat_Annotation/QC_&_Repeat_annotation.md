@@ -132,7 +132,7 @@ busco  -o clouded_leopard -i /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta -
 BlobTools is a command line tool designed for interactive quality assessment of genome assemblies and contaminant detection and filtering.
 
 
-#### Preparing files for blobtools2
+#### Preparing files for blobtools
 
 First, you need to blast your assembly to know nt databases. For this we will use blastn. 
 

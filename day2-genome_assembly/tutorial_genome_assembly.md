@@ -100,6 +100,8 @@ in FASTQ are ignored by hifiasm. Hifiasm outputs assemblies in `GFA <https://git
 One last step. convert your primary and other assemblies into a fata files
 
 ```
+qrsh
+cd /path/to/your/assembly_results/
 awk '/^S/{print ">"$2;print $3}' test.bp.p_ctg.gfa > test.p_ctg.fa
 ```
 

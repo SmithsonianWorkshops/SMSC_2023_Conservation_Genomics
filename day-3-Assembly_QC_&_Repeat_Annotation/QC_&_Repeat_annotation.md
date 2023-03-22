@@ -174,7 +174,7 @@ Second, you need to map raw reads to the genome assembly. We will use minimap2 f
 - Commands:
 
 ```
-minimap2 -ax map-hifi -t 20 /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta  /path/to_each/hifi.fastq | samtools sort -@20 -O BAM -o cloud_leopard_sorted.bam -
+minimap2 -ax map-hifi -t 20 /path/to_assembly/mNeoNeb1.pri.cur.20220520.fasta  /path/to_each/hifi1.fastq.gz /path/to_each/hifi2.fastq.gz /path/to_each/hifi3.fastq.gz | samtools view -b | samtools sort -@20 -O BAM -o cloud_leopard_sorted.bam -
 ```
 
 ##### Explanation:

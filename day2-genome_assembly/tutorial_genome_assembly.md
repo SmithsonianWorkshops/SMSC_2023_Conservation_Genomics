@@ -97,6 +97,12 @@ or FASTQ format, uncompressed or compressed with gzip (.gz). The quality scores 
 in FASTQ are ignored by hifiasm. Hifiasm outputs assemblies in `GFA <https://github.com/pmelsted/GFA-spec/blob/master/GFA-spec.md>`_ format.
 ```
 
+One last step. convert your primary and other assemblies into a fata files
+
+```
+awk '/^S/{print ">"$2;print $3}' test.bp.p_ctg.gfa > test.p_ctg.fa
+```
+
 ### 5. Run the fasta metadata parser to get statistics about both the primary assembly and haplotype-resolved assemblies.
 * We use a python script to grab some statistics from assembly files. These are the stats it produces:  
 

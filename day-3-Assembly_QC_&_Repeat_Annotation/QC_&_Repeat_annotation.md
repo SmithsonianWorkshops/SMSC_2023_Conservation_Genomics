@@ -6,7 +6,7 @@
  * [Input file](#Input-file)
  * [Run BUSCO](#Run-BUSCO)
  * [Run Blobtools](#Run-Blobtools)
- * [Run Blobtools](#Run-Blobtools)
+ * [Run Blobtools2](#Run-Blobtools2)
  * [Masking and annotating repetitive elements with Repeatmodeler and RepeatMasker](#Masking-and-annotating-repetitive-elements-with-Repeatmodeler-and-RepeatMasker)
  * [Running GeMoMa](#Running-GeMoMa)
 

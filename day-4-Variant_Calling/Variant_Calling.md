@@ -286,7 +286,7 @@ rungatk GenotypeGVCFs \
 
 The VariantFiltration tools is designed for hard-filtering variant calls based on custom quality criteria such as sequencing depth, mapping quality etc.
 
-#### Job file: GenotypeGVCFs.job
+#### Job file: VariantFiltration
 - Queue: medium time, high memory
 - PE: multi-thread
 - Number of CPUs: 5

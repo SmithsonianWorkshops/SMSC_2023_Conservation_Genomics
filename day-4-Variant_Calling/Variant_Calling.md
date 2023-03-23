@@ -101,8 +101,6 @@ Note! this step is quite time-consuming. I have run this for you before so we do
 The GATK (Genome Analysis Toolkit) is one of the most used programs for genotype calling in sequencing data in model and non model organisms. However, the GATK was designed to analyze human genetic data and all its pipelines are optimized for this purpose. Variant calling with GATK currently requieres 4 steps: Mark duplicates, 
 
 
-
-
 ####  Mark Duplicates with picard-tools
 
 Potential PCR duplicates need to be marked. Marking duplicates make sense even if you used a PCR-free library preparation procedure because reads identified as duplicates are not removed and can be included in the subsequent analyses if needed.
@@ -115,7 +113,6 @@ Potential PCR duplicates need to be marked. Marking duplicates make sense even i
 - Module: 
 ```
   module load bio/gatk/4.1.3.0 
-  
 ```
 - Commands:
 
@@ -148,7 +145,6 @@ The GATK requires read group information in BAM files. It is used to differentia
 
 ```
 rungatk AddOrReplaceReadGroups -I=NN114296_sorted_reads_duplMarked.bam -O=NN114296_sorted_reads_duplMarked_SM.bam -ID=1 -LB=lib1 -PL=ILLUMINA -PU=unit1 -SM=NN114296
-
 ```
 
 ##### Explanation:
@@ -163,17 +159,18 @@ rungatk AddOrReplaceReadGroups -I=NN114296_sorted_reads_duplMarked.bam -O=NN1142
 -SM: Sample Name
 ```
 
-#### create index for your reference genome
+#### create index for your reference genome and all bam files
 
-first we will copy our reference to our variant calling folder and them we will run CreateSequenceDictionary.
+first we will copy our reference to our variant calling folder and them we will run CreateSequenceDictionary and to run bwa softawere that will create two different files with indexing information for our refence genome.
 
 ```
 cp /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta .
 qrsh
 module load bio/gatk/4.1.3.0
-module load bio/bwa/
+module load bio/samtools/1.9
 rungatk CreateSequenceDictionary -R=mNeoNeb1.pri.cur.20220520.fasta -O=mNeoNeb1.pri.cur.20220520.dict
-bwa index mNeoNeb1.pri.cur.20220520.fasta
+samtools faidx mNeoNeb1.pri.cur.20220520.fasta
+samtools index NN114296_sorted_reads_duplMarked_SM.bam
 ```
 ##### Explanation:
 
@@ -209,7 +206,7 @@ HaplotypeCaller is the focal tool within GATK4 to simultaneously call germline S
 - Commands:
 
 ```
-rungatk HaplotypeCaller -I NN114296_sorted_reads_duplMarked_SM.bam -R /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta -ERC GVCF -O NN114296.g.vcf.gz
+rungatk HaplotypeCaller -I NN114296_sorted_reads_duplMarked_SM.bam -R mNeoNeb1.pri.cur.20220520.fasta -ERC GVCF -O NN114296.g.vcf.gz
 
 ```
 
@@ -238,7 +235,7 @@ We have pre-processed two additional samples (NN and NN) up to the HaplotypeCall
 - Commands:
 
 ```
-rungatk CombineGVCFs -R /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta \
+rungatk CombineGVCFs -R mNeoNeb1.pri.cur.20220520.fasta \
 -V NN114296.g.vcf.gz \
 -V NN114296.g.vcf.gz \
 -V NN114296.g.vcf.gz \
@@ -271,7 +268,7 @@ This tool is designed to perform joint genotyping on a single input, which may c
 
 ```
 rungatk GenotypeGVCFs \
--R /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta \
+-R mNeoNeb1.pri.cur.20220520.fasta \
 -V clouded_leopard_cohort.g.vcf.gz \
 -O clouded_leopard_output.vcf.gz
 
@@ -302,7 +299,7 @@ The VariantFiltration tools is designed for hard-filtering variant calls based o
 
 ```
 rungatk VariantFiltration \
--R /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta \
+-R mNeoNeb1.pri.cur.20220520.fasta \
 -V clouded_leopard_output.vcf.gz \
 -O cloduded_leopard_varfilter.vcf \
 --filter-name "Low_depth10" \

@@ -15,7 +15,7 @@
 ### Folder structure
 
 Let's create a new folder  called `pop_genomics` in your  `/scratch/genomics/your_username`. 
-our folder structure for this workshop. It's easier to troubleshoot any issues if we are all working within the same framework. First, we will create a folder called `genome_qc_annotation` in your `/scratch/genomics/your_username` folder. 
+It's easier to troubleshoot any issues if we are all working within the same framework.
 
 ```
 cd /scratch/genomics/your_username/
@@ -55,27 +55,27 @@ If we follow this folder structure, we will have all the results organized by so
 ### Input files
 For this session, we will use the reference cloud leopard assembly. You can find this file here: `/data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta`
 
-We will also need the illumina data (fastq) for our 7 Clouded Leopard individuals this will represent our population. Remember that the data is locted here: `/data/genomics/workshops/smsc_2023/clouded_leopard_illumina`
+We will also need the Illumina data (fastq) for our 7 Clouded Leopard individuals this will represent our population. Remember that the data are locted here: `/data/genomics/workshops/smsc_2023/clouded_leopard_illumina`
 
 
 ### Map to the reference genome
 
-The firs step to call for variants is to map all our individuals to our reference genome. Similar to yesterday, we will use minimap2 and samtools to map and convert from SAM file to BAM file. SAM files are tab-delimited text files that are usually very large in size. To save space and make it easy for software to hand large aliments, SAM is usually converted to a binary format BAM. 
+The first step to call for variants is to map the raw data from all of our individuals to our reference genome. Similar to yesterday, we will use minimap2 and samtools to map and convert from SAM file to BAM file. SAM files are tab-delimited text files that are usually very large in size. To save space and make it easy for software to hand large aliments, SAM is usually converted to a binary format BAM. 
 
 
 #### Job file: minimap_pop_clouded_leopard.job
-- Queue: medium
+- Queue: medium time, high-CPU
 - PE: multi-thread
 - Number of CPUs: 10
 - Memory: 6G (6G per CPU, 60G total)
 - Module: 
 ```
-module load bio/minimap/
+module load bio/minimap2
 ```
 - Commands:
 
 ```
-minimap2 -ax sr -t 20 /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta /data/genomics/workshops/smsc_2023/clouded_leopard_illumina/NN114296_1.fastq.gz /data/genomics/workshops/smsc_2023/clouded_leopard_illumina/NN114296_2.fastq.gz | samtools sort -@20 -O BAM -o NN114296_cloud_leopard_sorted.bam -
+minimap2 -ax sr -t 20 /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta /data/genomics/workshops/smsc_2023/clouded_leopard_illumina/NN114296_1.fastq.gz /data/genomics/workshops/smsc_2023/clouded_leopard_illumina/NN114296_2.fastq.gz | samtools sort -@20 -O BAM -o NN114296_clouded_leopard_sorted.bam -
 ```
 
 ##### Explanation:
@@ -98,7 +98,7 @@ Note! this step is quite time-consuming. I have run this for you before so we do
 
 ### The Genome Analysis Toolkit (GATK)
 
-The GATK (Genome Analysis Toolkit) is one of the most used programs for genotype calling in sequencing data in model and non model organisms. However, the GATK was designed to analyze human genetic data and all its pipelines are optimized for this purpose. Variant calling with GATK currently requieres 4 steps: Mark duplicates, 
+The GATK (Genome Analysis Toolkit) is one of the most used programs for genotype calling in sequencing data in model and non model organisms. However, the GATK was designed to analyze human genetic data and all its pipelines are optimized for this purpose. Variant calling with GATK currently requires 4 steps: Mark duplicates, 
 
 
 ####  Mark Duplicates with picard-tools
@@ -161,7 +161,7 @@ rungatk AddOrReplaceReadGroups -I=NN114296_sorted_reads_duplMarked.bam -O=NN1142
 
 #### create index for your reference genome and all bam files
 
-first we will copy our reference to our variant calling folder and them we will run CreateSequenceDictionary and to run bwa softawere that will create two different files with indexing information for our refence genome.
+First we will copy our reference to our variant calling folder and then we will run CreateSequenceDictionary and to run samtools, which will create two different files with indexing information for our refence genome.
 
 ```
 cp /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta .
@@ -182,7 +182,7 @@ samtools index NN114296_sorted_reads_duplMarked_SM.bam
 
 #### Base quality recalibration
 
-The GATK best practices recommend performing Base Quality Score Recalibration. This procedure detects systematic errors in your data by comparing it to the reference training data set. The problem with non-mode organisms is that there is usually no large high confidence genotype database that is required for training. One of the solutions to this problem is to create a custom training database from the same data you analyze but using very stringent filtering criteria and re-calibrate the data. Others have addressed this question at the GATK forum and although the approach was supported by the GATK team, in practice it did not works well. It simply shifts the distribution to lower scores and in many cases biases result. Thus people suggest to not performed this is step on non-model organism.
+The GATK best practices recommend performing Base Quality Score Recalibration. This procedure detects systematic errors in your data by comparing it to the reference training data set. The challenge with non-model organisms is that there is usually no large high confidence genotype database that is required for training. One of the solutions to this problem is to create a custom training database from the same data you analyze but using very stringent filtering criteria and re-calibrate the data. Others have addressed this question at the GATK forum and although the approach was supported by the GATK team, in practice it did not work well. It simply shifts the distribution to lower scores and in many cases biases result. Thus people suggest to not performed this step on non-model organisms.
 
 #### Variant Calling
 
@@ -192,10 +192,10 @@ incremental addition of samples for joint genotyping.
 This also requires several steps:
 
 a) HaplotypeCaller 
-HaplotypeCaller is the focal tool within GATK4 to simultaneously call germline SNVs and small Indels using local de novo assembly of haplotype regions. Briefly, the HaplotypeCaller works by: 1. Identify regions with evidence of variations. 2. Re-asssemble the active regions.  3. Determine likelihoods of the haplotypes given the data. 4. assigns samples genotypes. For each potential variant site, the program applies Baye's rule using the likelihood of the allele given the data.
+HaplotypeCaller is the focal tool within GATK4 to simultaneously call germline SNVs and small Indels using local de novo assembly of haplotype regions. Briefly, the HaplotypeCaller works by: 1. Identify regions with evidence of variations. 2. Re-asssemble the active regions.  3. Determine likelihoods of the haplotypes given the data. 4. Assigns genotypes to samples. For each potential variant site, the program applies Bayes' rule using the likelihood of the allele given the data.
 
 #### Job file: HaplotypeCaller_1.job
-- Queue: medium
+- Queue: medium time, high memory
 - PE: multi-thread
 - Number of CPUs: 5
 - Memory: 10G (10G per CPU, 50G total)
@@ -224,7 +224,7 @@ The CombineGVCFs tool is applied to combine multiple single sample GVCF files, m
 We have pre-processed two additional samples (NN and NN) up to the HaplotypeCaller step (above).
 
 #### Job file: CombineGVCFs.job
-- Queue: medium
+- Queue: medium time, high memory
 - PE: multi-thread
 - Number of CPUs: 5
 - Memory: 10G (10G per CPU, 50G total)
@@ -246,7 +246,7 @@ rungatk CombineGVCFs -R mNeoNeb1.pri.cur.20220520.fasta \
 
 ```
 -V: each of the individual g.vcf files. One -V for each.
--R: Reference Genome (Fasta)
+-R: Reference Genome (fasta)
 -O: Output file with all the individuals combine (i.e. X_cohort.g.vcf file)
 ```
 
@@ -256,7 +256,7 @@ c) Apply GenotypeGVCFs
 This tool is designed to perform joint genotyping on a single input, which may contain one or many samples. In any case, the input samples must possess genotype likelihoods produced by HaplotypeCaller.
 
 #### Job file: GenotypeGVCFs.job
-- Queue: medium
+- Queue: medium time, high memory
 - PE: multi-thread
 - Number of CPUs: 5
 - Memory: 10G (10G per CPU, 50G total)
@@ -287,7 +287,7 @@ rungatk GenotypeGVCFs \
 The VariantFiltration tools is designed for hard-filtering variant calls based on custom quality criteria such as sequencing depth, mapping quality etc.
 
 #### Job file: GenotypeGVCFs.job
-- Queue: medium
+- Queue: medium time, high memory
 - PE: multi-thread
 - Number of CPUs: 5
 - Memory: 10G (10G per CPU, 50G total)

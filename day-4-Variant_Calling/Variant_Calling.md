@@ -223,6 +223,14 @@ b) Apply CombineGVCFs
 The CombineGVCFs tool is applied to combine multiple single sample GVCF files, merging them into a single multi-sample GVCF file.
 We have pre-processed two additional samples (NN and NN) up to the HaplotypeCaller step (above).
 
+Before, runing this we need to index our vcf file. Copy the g.vcf file from my folder and index this files on yours.
+
+qrsh
+module load bioinformatics/htslib/1.9
+tabix -p vcf /path/to/NN115950_s.g.vcf.gz
+
+
+
 #### Job file: CombineGVCFs.job
 - Queue: medium time, high memory
 - PE: multi-thread

@@ -236,9 +236,9 @@ We have pre-processed two additional samples (NN and NN) up to the HaplotypeCall
 
 ```
 rungatk CombineGVCFs -R mNeoNeb1.pri.cur.20220520.fasta \
--V NN114296.g.vcf.gz \
--V NN114297.g.vcf.gz \
--V NN114393.g.vcf.gz \
+-V /pool/genomics/ariasc/SMSC_2023/mapping/NN114296.s.g.vcf.gz \
+-V /pool/genomics/ariasc/SMSC_2023/mapping/NN114297.s.g.vcf.gz \
+-V /pool/genomics/ariasc/SMSC_2023/mapping/NN115950_s.g.vcf.gz \
 -O clouded_leopard_cohort.g.vcf.gz
 ```
 

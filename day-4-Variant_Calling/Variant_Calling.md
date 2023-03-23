@@ -163,6 +163,22 @@ rungatk AddOrReplaceReadGroups -I=NN114296_sorted_reads_duplMarked.bam -O=NN1142
 -SM: Sample Name
 ```
 
+#### create index for your reference genome
+
+first we will copy our reference to our variant calling folder and them we will run CreateSequenceDictionary.
+
+```
+cp /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta .
+rungatk CreateSequenceDictionary -R=mNeoNeb1.pri.cur.20220520.fasta -O=mNeoNeb1.pri.cur.20220520.dict
+```
+##### Explanation:
+
+```
+-R: Reference Genome (Fasta)
+-O: Output reference index dictionary
+
+```
+
 #### Base quality recalibration
 
 The GATK best practices recommend performing Base Quality Score Recalibration. This procedure detects systematic errors in your data by comparing it to the reference training data set. The problem with non-mode organisms is that there is usually no large high confidence genotype database that is required for training. One of the solutions to this problem is to create a custom training database from the same data you analyze but using very stringent filtering criteria and re-calibrate the data. Others have addressed this question at the GATK forum and although the approach was supported by the GATK team, in practice it did not works well. It simply shifts the distribution to lower scores and in many cases biases result. Thus people suggest to not performed this is step on non-model organism.

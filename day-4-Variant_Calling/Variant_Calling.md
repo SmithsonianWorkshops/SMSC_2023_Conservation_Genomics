@@ -169,7 +169,11 @@ first we will copy our reference to our variant calling folder and them we will 
 
 ```
 cp /data/genomics/workshops/smsc_2023/clouded_leopard_pacbio/mNeoNeb1.pri.cur.20220520.fasta .
+qrsh
+module load bio/gatk/4.1.3.0
+module load bio/bwa/
 rungatk CreateSequenceDictionary -R=mNeoNeb1.pri.cur.20220520.fasta -O=mNeoNeb1.pri.cur.20220520.dict
+bwa index mNeoNeb1.pri.cur.20220520.fasta
 ```
 ##### Explanation:
 

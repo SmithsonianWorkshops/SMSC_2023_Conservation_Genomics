@@ -30,17 +30,19 @@ mkdir psmc
 The initial step in the process is to generate a consensus sequence from the bam files. Although the command for this step is relatively old, it still functions effectively. However, it is important to ensure that the command is still operational and functioning correctly before proceeding. This step should take between 9 and 12 hours to run on Hydra with 8 Gb of RAM. 
 
 ```bash
+module load bioinformatics/bcftools
 bcftools mpileup -Ou -f <reference> <bam_file> | bcftools call -c | vcfutils.pl vcf2fq -d 10 -D 100 | gzip > <output.fq.gz>
 ```
 
 1. `bcftools mpileup -C50 -uf <reference> <bam_file>`: This command generates a textual pileup format of the input BAM file (`<bam_file>`) using the given reference genome (`<reference>`). The `C50` option applies a coefficient to adjust the base alignment quality, and the `u` flag outputs the results in the uncompressed BCF format, which is required for piping to `bcftools`. The `f` flag specifies the reference genome file.
 2. `bcftools call -c`: This command performs variant calling on the input data received from the `bcftools mpileup` command (indicated by `` as input). The `c` option uses the consensus caller, which is suitable for calling a diploid consensus sequence.
-3. `vcfutils.pl vcf2fq -d 10 -D 100`: This command is part of the VCFtools package and converts the output from `bcftools call` (in VCF format) to a FastQ format. The `d 10` and `D 100` options set the minimum and maximum depth thresholds for filtering variants, respectively.
+3. `vcfutils.pl vcf2fq -d 10 -D 100`: This command is part of the `bcftools` package and converts the output from `bcftools call` (in VCF format) to a FastQ format. The `d 10` and `D 100` options set the minimum and maximum depth thresholds for filtering variants, respectively.
 4. `gzip > <output.fq.gz>`: This part of the command compresses the final output using `gzip` and saves it as a `.fq.gz` file (`<output.fq.gz>`).
 
 With the consensus sequence we generate the input file in order to run PSMC. For the sake of time you can copy the data from the original folder.
 
 ```bash
+module load bioinformatics/psmc
 fq2psmcfa -q20 <input.fq.gz> > <output.psmcfa>
 ```
 
@@ -49,6 +51,7 @@ This command will take a gzipped FastQ file `input.fq.gz` as input and create a 
 ### Run PSMC
 
 ```bash
+module load bioinformatics/psmc
 psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o <output.psmc> <input.psmcfa>
 ```
 
@@ -65,7 +68,8 @@ psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o <output.psmc> <input.psmcfa>
 You can also create the command to run simulations based on your results. We are not using this for the tutorial, but you have the option if you need.
 
 ```bash
-utils/[psmc2history.pl](http://psmc2history.pl/) <input.psmc> | utils/[history2ms.pl](http://history2ms.pl/) > <output_ms-cmd.sh>
+module load bioinformatics/psmc
+psmc2history.pl <input.psmc> | history2ms.pl > <output_ms-cmd.sh>
 ```
 
 This command consists of two parts that involve the use of Perl scripts from the PSMC utilities package. The scripts convert the PSMC output file into an ms command, which can then be used to simulate genetic data using the ms software.
@@ -80,6 +84,7 @@ The resulting shell script file (`<output_ms-cmd.sh>`) contains the ms command t
 Finally you can plot the results using the provided script. After that you should download the output to your machine. 
 
 ```bash
+module load bioinformatics/psmc
 psmc_plot.pl -g 7 -u 1e-8 -p <input_name> </path/to/file/psmc/input.psmc>
 ```
 
@@ -94,5 +99,6 @@ The process outlined above is relatively straightforward, with the main point of
 Now, try to run with a generation time of four years. What is the difference you can observe in the plot?
 
 ```bash
+module load bioinformatics/bcftools
 psmc_plot.pl -g 4 -u 1e-8 -p NN114296_g4 /path/to/file/psmc/NN114296.psmc
 ```

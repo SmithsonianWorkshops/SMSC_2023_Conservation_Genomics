@@ -67,7 +67,7 @@ clouded_leopard_pca.eigenvec
 
 Remember to use ffsend. Tip: You need to load the module ```bioinformatics/ffsend``` and then used the command ```ffsend upload <FILE>```.
 
-### Visualializing resutls in R and Rstudio
+### Visualizing results in R and Rstudio
 
 Now that we have the files on our machines lets plot our PCA results. For this we will use R and Rstudio.
 The first step is to create an Rstudio project where you will performe your analysis. In your R studio project, open a new Rmarkdown document or an R script to write and comment your R commands. You can also move the results files from PLINK to your project folder.

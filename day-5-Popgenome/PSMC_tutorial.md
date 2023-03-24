@@ -29,7 +29,7 @@ mkdir psmc
 The initial step in the process is to generate a consensus sequence from the bam files. Although the command for this step is relatively old, it still functions effectively. However, it is important to ensure that the command is still operational and functioning correctly before proceeding. This step should take between 9 and 12 hours to run on Hydra with 8 Gb of RAM. 
 
 ```bash
-bcftools mpileup -Ou -f <reference> <bam_file> | bcftools call -c | [vcfutils.pl](http://vcfutils.pl/) vcf2fq -d 10 -D 100 | gzip > <output.fq.gz>
+bcftools mpileup -Ou -f <reference> <bam_file> | bcftools call -c | vcfutils.pl vcf2fq -d 10 -D 100 | gzip > <output.fq.gz>
 ```
 
 1. `bcftools mpileup -C50 -uf <reference> <bam_file>`: This command generates a textual pileup format of the input BAM file (`<bam_file>`) using the given reference genome (`<reference>`). The `C50` option applies a coefficient to adjust the base alignment quality, and the `u` flag outputs the results in the uncompressed BCF format, which is required for piping to `bcftools`. The `f` flag specifies the reference genome file.

@@ -90,10 +90,6 @@ psmc_plot.pl -g 7 -u 1e-8 -p <input_name> </path/to/file/psmc/input.psmc>
 
 The process outlined above is relatively straightforward, with the main point of concern being the selection of appropriate values for the generation time and mutation rate of the species being studied. However, obtaining accurate information on these parameters can be challenging, particularly for taxonomic groups where such data is scarce or non-existent. In such cases, researchers may need to rely on estimates or approximations to proceed with their analysis.
 
-![PSMC Plot for NN114296 individual.](PSMC%20392c65d514bf42dc855a94cc2cd6003e/Screenshot_2023-03-23_at_11.52.32.png)
-
-PSMC Plot for NN114296 individual.
-
 Now, try to run with a generation time of four years. What is the difference you can observe in the plot?
 
 ```bash

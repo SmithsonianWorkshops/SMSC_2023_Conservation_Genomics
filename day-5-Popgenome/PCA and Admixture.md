@@ -2,12 +2,12 @@
 
 <!-- TOC depthFrom:2 -->
 
- * [Population Structure: Runing A Principal Componet Analisis](#Population-Structure:-Runing-A-Principal-Componet-Analisis)
+ * [Population Structure: Running A Principal Componet Analysis](#Population-Structure:-Running-A-Principal-Componet-Analysis)
  
 <!-- /TOC -->
 
 
-### Population Structure: Runing A Principal Componet Analisis
+### Population Structure: Running A Principal Componet Analysis
 
 Now we have a full filtered VCF file with variants for our seven Clouded Leopards. Now we will investigate population structure using principal components analysis. Examining population structure can give us insight into the origin and history of populations. PCA is a Model-free method used to assess population structure and ancestry.
 

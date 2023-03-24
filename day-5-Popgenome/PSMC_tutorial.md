@@ -10,6 +10,7 @@ Mapping files are located in the directory below. You can also use your own mapp
 
 ```bash
 /pool/genomics/figueiroh/SMSC_2023_class/mapping
+/pool/genomics/figueiroh/SMSC_2023_class/reference
 ```
 
 Intermediate data are located in the following directory:

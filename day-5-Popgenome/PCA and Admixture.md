@@ -158,7 +158,7 @@ pca_plot
  * What will happen if you plot other PCs?
  * Play with the colors and change the names?
  
-### Challange
+### Challenge
 
 Let's play now with another and more complex file. I have one of my data files, this represents an ample sampling of close to 60 individuals of Brachyhypopomus occidentalis across all of his natural range (From Venezuela, Costa Rica).
 
@@ -179,7 +179,7 @@ plink --vcf ../efish.vcf --double-id --allow-extra-chr --set-missing-var-ids @:#
 
 ```
  
-#### R ploting Commands
+#### R plotting Commands
 
 ```
 # load tidyverse package

@@ -182,8 +182,8 @@ plink --vcf ../efish.vcf --double-id --allow-extra-chr --set-missing-var-ids @:#
 # load tidyverse package
 library(tidyverse)
 # read in data
-pca <- read_table2("./efish.eigenvec", col_names = FALSE)
-eigenval <- scan("./efish.eigenval")
+pca <- read_table2("efish.eigenvec", col_names = FALSE)
+eigenval <- scan("efish.eigenval")
 
 # sort out the pca data
 # remove nuisance column
@@ -197,31 +197,34 @@ pop_map<- read.delim("pop_map4.txt", header = T)
 # first convert to percentage variance explained
 pve <- data.frame(PC = 1:20, pve = eigenval/sum(eigenval)*100)
 
-# make plot
+# make plot for eigenvalues
 pve_plot <- ggplot(pve, aes(PC, pve)) + geom_bar(stat = "identity")
 pve_plot + ylab("Percentage variance explained") + theme_light()
 
 # calculate the cumulative sum of the percentage variance explained
 cumsum(pve$pve)
 
-#PCA_joined_popm <- left_join(pca, pop_map, by = c("ind" = "ind"))
+#join tables to be able to annotated your figure 
+PCA_joined_popm <- left_join(pca, pop_map, by = c("ind" = "ind"))
+
+# location column shoul be read as factor
 PCA_joined_popm$loc <- as.factor(PCA_joined_popm$loc)
 
-#PCA_joined_popm %>% rename(loc1=V2,loc2=V3)
+# merge into an new table
 PCA_joined_popm <- merge(pca, pop_map, by.x = "ind",  by.y = "ind", all.x = TRUE, all.y = F)
 
+#check the levels on localitie column
 levels(PCA_joined_popm$loc)
 
+#establish color to be used for each population with a vector
 cols <- c("Atrato"= "#009E73","Bayano"="#56B4E9","Bocas" ="#CC79A7","Calovebora"= "brown","CanalZone"="#B6DBFF","Cocle"="#F0E442","Darien"="#882255","GunaYala"="#7F7F7F", "Orinoco"="darkgreen", "SanJuan"= "green", "Lajas"="#999933")  
 
+# perhaps, you can have two vectors with different colors assigments
 cols2 <- c("Bocas" ="#E69F00","Calovebora"= "#999933","Santa_Maria"="deepskyblue","Cocle"="red2","Chagres"="khaki4","GunaYala"="#7F7F7F","Bayano"="#CC79A7", "Darien"="darkgreen","P_Col"= "blueviolet", "Venezuela"="red4")  
 
-
-#scale_color_manual(values=c("#009E73","#D55E00","#F0E442","#CC79A7","#882255","#56B4E9","#E69F00","#0072B2","#7F7F7F","#B6DBFF","#999933"))
+#create a vector with text levels for each populatio
 
 L_labels= c("Bocas" ="Bocas (W.Pan.)", "Calovebora"="Calovebora (C.Pan)", "Santa_Maria"="Santa Maria (C.Pan)",  "Cocle"="Cocle Norte (N.Pan)",  "Chagres"="Chagres (C.Pan)","GunaYala"="GunaYala (N.Pan)","Bayano"="Bayano (E.Pan)", "Darien"="Darien (E.Pan)", "P_Col"= "Pacific Col", "Venezuela"="Venezuela") 
-
-PCA_joined_popm$loc <- factor(PCA_joined_popm$loc, levels = c("Bocas","Calovebora","Santa_Maria", "Cocle", "Chagres","GunaYala",   "Bayano", "Darien", "P_Col", "Venezuela"), labels =c("Bocas" ="Bocas (W.Pan.)", "Calovebora"="Calovebora (C.Pan)", "Santa_Maria"="Santa Maria (C.Pan)",  "Cocle"="Cocle Norte (N.Pan)",  "Chagres"="Chagres (C.Pan)","GunaYala"="GunaYala (N.Pan)","Bayano"="Bayano (E.Pan)", "Darien"="Darien (E.Pan)", "P_Col"= "Pacific Col", "Venezuela"="Venezuela"))
 
 # plot pca
 library("ggplot2")
@@ -233,6 +236,7 @@ b
 
 # Save file as PNG
 ggsave(b, file="PCA_efish2.png", dpi = 300)
+
 
 ```
 </p>

@@ -87,7 +87,10 @@ eigenval <- scan("clouded_leopard_pca.eigenval")
 Next, we need to start cleaning our data frame table. Look at your data frame. We will delete duplicated columns (i.e. individual ID) and also we will give a proper name to the columns in the pca data frame.
 
 ```
-pca <- pca[,-1]
+pca <- pca[,-1] #deletes first column
+
+#set names
+names(pca)[1] <- "ind"
 names(pca)[2:ncol(pca)] <- paste0("PC", 1:(ncol(pca)-1))
 ```
 

@@ -302,46 +302,4 @@ tbl<-read.table("efish.10.Q")
 barplot(t(as.matrix(tbl)), col=rainbow(10),
                xlab="Individual #", ylab="Ancestry", border=NA)
 
-#pop_map<- pop_map %>% rename(ind=V1,loc=V2, loc2=V3)
-
-pop_map_admix <-read.table("efish.list")
-
-Popadmix_order_joined_popm <- left_join(pop_map_admix, pop_map, 
-              by = c("V1" = "ind"))
-Popadmix_order_joined_popm <- Popadmix_order_joined_popm %>% rename("ind"="V1")
-
-tbl_pop_map<- cbind(Popadmix_order_joined_popm,tbl)
-
-# Melt (reshape data from wide format to long format).
-library(reshape2)
-tbl_pop_gather = melt(tbl_pop_map, id.vars=c("ind", "pop", "loc"), variable.name="Ancestry", value.name="Fraction")
-#change values within df
-#levels(tbl_pop_gather$Ancestry)[levels(tbl_pop_gather$Ancestry)=="V1"] <- "K1"
-
-
-# Simple stacked bar plot:
-#col=c("red", "blue","darkblue", "green", "darkgreen", "black", "orange", "purple", "pink","brown")
-
-tbl_pop_gather$loc <- as.factor(tbl_pop_gather$loc)
-
-levels(tbl_pop_gather$loc)
-
-tbl_pop_gather$loc = factor(tbl_pop_gather$loc,levels=c("Venezuela","P_Col", "Darien","Bayano","GunaYala","Chagres", "Cocle","Santa_Maria","Calovebora","Bocas"),labels=c("V","Col","Da","By","GY","Ch", "CN","SM", "Cv","BT")) 
-
-#cols2 <- c("Bocas" ="#E69F00","Calovebora"= "#999933","Santa_Maria"="deepskyblue","Cocle"="red2","Chagres"="khaki4","GunaYala"="#7F7F7F","Bayano"="#CC79A7", "Darien"="darkgreen","P_Col"= "blueviolet", "Venezuela"="red4")  
-
-
-library("ggplot2")
-p = ggplot(tbl_pop_gather, aes(x=ind, y=Fraction, fill=Ancestry)) +
-    geom_bar(stat="identity", position="stack") +
-    facet_grid(. ~ loc, drop=TRUE, space="free", scales="free")
-
-p2 = p + theme(panel.grid=element_blank())+theme(axis.title.x=element_blank())+ theme(axis.text.x=element_blank()) + theme(axis.ticks.x=element_blank()) +  
-#+ scale_fill_manual(values=col) 
-theme(legend.position="none")
-p2<- p2 + scale_fill_manual(values=c("blueviolet","green","red2","#E69F00","darkgreen","#CC79A7", "deepskyblue","#7F7F7F","khaki4","#999933"))
-p2
-
-ggsave(p2, file="admixture_efish2.png", dpi = 300)
-
 ```

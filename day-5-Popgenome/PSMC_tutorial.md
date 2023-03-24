@@ -99,6 +99,6 @@ The process outlined above is relatively straightforward, with the main point of
 Now, try to run with a generation time of four years. What is the difference you can observe in the plot?
 
 ```bash
-module load bioinformatics/bcftools
+module load bioinformatics/psmc
 psmc_plot.pl -g 4 -u 1e-8 -p NN114296_g4 /path/to/file/psmc/NN114296.psmc
 ```

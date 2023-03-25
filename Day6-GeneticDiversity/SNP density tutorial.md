@@ -9,7 +9,7 @@ Finally, the results can be visualized by generating a plot using your preferred
 The VCF file used for this tutorial can be found in the folder below
 
 ```bash
-/pool/genomics/figueiroh/SMSC2023_class/vcf
+/pool/genomics/figueiroh/SMSC_2023_class/vcf
 ```
 
 The first step is to create the folder where we are going to work with the vcf files in order to generate the SNP density plots.

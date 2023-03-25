@@ -33,7 +33,7 @@ echo -e "$SAMPLE\t$HETEROZYGOSITY\t$GENOME_LENGTH" >> $OUTPUT_FILE
 done
 ```
 
-This is a bash script that calculates the heterozygosity of each sample in a VCF file. It uses the bcftools command line tool to extract the list of sample names and calculate the number of heterozygous variants for each sample. The results are written to a tab-separated file with the name "heterozygosity.tsv" and two columns: "Sample" and "Heterozygosity". The script assumes that the VCF file is named "your_vcf_file.vcf" and is located in the same directory as the script.
+This is a bash script that calculates the heterozygosity of each sample in a VCF file. It uses the bcftools command line tool to extract the list of sample names and calculate the number of heterozygous variants for each sample. The results are written to a tab-separated file with the name "heterozygosity.tsv" and two columns: "Sample" and "Heterozygosity". The script assumes that the VCF file is named "your_vcf_file.vcf" and is located in the same directory as the script. Copy this script to a file, give a name that ends with `.sh`, and run on interactive mode on Hydra using `bash command.sh`.
 
 | Individual | Heterozygous sites | Heterozygosity |
 | --- | --- | --- |

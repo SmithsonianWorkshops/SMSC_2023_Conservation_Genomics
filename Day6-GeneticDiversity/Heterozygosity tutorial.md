@@ -73,8 +73,7 @@ Key capabilities of ANGSD include:
 3. Genetic association studies: ANGSD can perform Genome-Wide Association Studies (GWAS) and estimate genotype-phenotype associations using mixed linear models or generalized linear models.
 4. Population structure: ANGSD can estimate population structure and admixture proportions using principal component analysis (PCA) or model-based approaches.
 5. Selection scans: The software can detect signals of positive or balancing selection, using various statistics like FST, Tajima's D, and nucleotide diversity.
-6. Demographic history: ANGSD can estimate demographic parameters such as population size changes, divergence times, and migration rates using methods like the pairwise sequentially Markovian coalescent (PSMC) or the multiple sequentially Markovian coalescent (MSMC).
-7. Handling of various file formats: ANGSD can work with various input file formats, including BAM, CRAM, and VCF files, and output results in multiple formats suitable for downstream analyses.
+6. Handling of various file formats: ANGSD can work with various input file formats, including BAM, CRAM, and VCF files, and output results in multiple formats suitable for downstream analyses.
 
 Overall, ANGSD is a versatile and powerful tool for analyzing NGS data, particularly for non-model organisms or low-coverage sequencing projects. It provides a comprehensive suite of analysis tools that cater to various research objectives in population genetics and genomics.
 

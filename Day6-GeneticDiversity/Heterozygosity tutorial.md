@@ -13,7 +13,7 @@ There are many methods available to achieve this. In this tutorial, we will use 
 
 VCF_FILE="../filtered/NN_HD_PASS_DP5_merged.vcf"
 OUTPUT_FILE="NN_heterozygosity_v5.tsv"
-GENOME_LENGTH=2500000000
+GENOME_LENGTH=2468345093 #you can use the fasta index (.fai) to sum the total length of the genome
 
 #Get a list of sample names from the VCF file
 

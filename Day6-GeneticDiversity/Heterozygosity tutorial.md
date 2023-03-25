@@ -9,28 +9,24 @@ There are many methods available to achieve this. In this tutorial, we will use 
 ```bash
 #!/bin/bash
 
-#Replace these with the actual file names 
-
-VCF_FILE="../filtered/NN_HD_PASS_DP5_merged.vcf"
+#Replace these with the actual file names
+VCF_FILE="/pool/genomics/figueiroh/SMSC_2023_class/vcf/NN_6samples_HD_PASS_DP5.vcf.gz"
 OUTPUT_FILE="NN_heterozygosity_v5.tsv"
 GENOME_LENGTH=2468345093 #you can use the fasta index (.fai) to sum the total length of the genome
 
 #Get a list of sample names from the VCF file
-
 SAMPLES=$(bcftools query -l $VCF_FILE)
 
 #Write a header line to the output file
-
 echo -e "Sample\tHeterozygous_sites\tHeterozygosity" > $OUTPUT_FILE
 
 #Loop through each sample and calculate the heterozygosity
-
 for SAMPLE in $SAMPLES; do
-TOTAL_POSITIONS=$(grep -v "#" $VCF_FILE | wc -l)
-HETEROZYGOUS=$(bcftools view -s $SAMPLE $VCF_FILE | grep -v "#" | grep -o "0/1" |$
-HETEROZYGOSITY=$(echo "scale=7; $HETEROZYGOUS / $GENOME_LENGTH" | bc)
-echo -e "$SAMPLE\t$HETEROZYGOSITY\t$GENOME_LENGTH" >> $OUTPUT_FILE
+  HETEROZYGOUS=$(bcftools view -s $SAMPLE $VCF_FILE | grep -v "#" | grep -o "0/1" | wc -l)
+  HETEROZYGOSITY=$(echo "scale=7; $HETEROZYGOUS / $GENOME_LENGTH" | bc)
+  echo -e "$SAMPLE\t$HETEROZYGOUS\t$HETEROZYGOSITY" >> $OUTPUT_FILE
 done
+
 ```
 
 This is a bash script that calculates the heterozygosity of each sample in a VCF file. It uses the bcftools command line tool to extract the list of sample names and calculate the number of heterozygous variants for each sample. The results are written to a tab-separated file with the name "heterozygosity.tsv" and two columns: "Sample" and "Heterozygosity". The script assumes that the VCF file is named "your_vcf_file.vcf" and is located in the same directory as the script. Copy this script to a file, give a name that ends with `.sh`, and run on interactive mode on Hydra using `bash command.sh`.

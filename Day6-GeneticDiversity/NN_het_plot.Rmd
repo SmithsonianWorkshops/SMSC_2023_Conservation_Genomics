@@ -1,0 +1,38 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r}
+
+library(tidyverse)
+library(viridis)
+library(scales)
+
+het_master <- read.table("/Users/henrique/Dropbox/Documentos/Pós-Doc/Smithsonian/SMSC_workshop/heterozygosity/NN_SUPER.est.ml")
+
+het_master %>% 
+  rename(sample=V2) %>%
+  rename(chromosome = V3) %>%
+  mutate(heterozygosity = V5/(V4 + V5)) %>%
+  mutate(position = ((V1*200000)-200000))   %>%
+  filter(chromosome == "SUPER_2") %>%
+  ggplot(aes(x=position, y=heterozygosity)) +
+  geom_line(colour="grey",alpha=0.5) +
+  geom_point(aes(colour=factor(chromosome))) +
+  scale_color_viridis(discrete = TRUE) +
+  facet_grid(sample ~ chromosome,scales = "free_x") +
+  labs(x = NULL, y = "Heterozygosity\n") +
+  scale_y_continuous(labels = comma) +
+  scale_x_continuous(labels = comma) +
+  theme_minimal() +
+  theme(legend.position = "none",
+        strip.text.x = element_text(face = "bold"),
+        strip.text.y = element_text(face = "bold"),
+        panel.grid.major.x = element_blank(),
+        panel.grid.minor.x = element_blank(),
+        panel.spacing.x = unit(0, "line"),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.25))
+```
+
+

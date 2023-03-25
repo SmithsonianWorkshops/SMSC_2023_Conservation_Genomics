@@ -1,4 +1,4 @@
-# Heterozigosity tutorial
+# Heterozygosity tutorial
 
 Heterozygosity is a simple and informative statistic that can be obtained by analyzing whole-genome data. You can calculate the average heterozygosity of an individual or assess the local heterozygosity throughout the genome to answer more specific questions.
 

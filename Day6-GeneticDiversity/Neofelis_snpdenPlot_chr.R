@@ -4,6 +4,7 @@ setwd("/path/to/folder/snpden/") #Change the path to your own folder
 # Load the required packages
 
 library(tidyverse)
+library(gdata)
 
 # Read the SNP density data file
 snpden <- read.table("NN_hetsites.snpden.txt", header = T)

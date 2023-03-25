@@ -85,6 +85,8 @@ Overall, ANGSD is a versatile and powerful tool for analyzing NGS data, particul
 ### How to run heterozygosity using ANGSD
 
 ```bash
+module load bioinformatics/angsd/0.921
+
 angsd -P <threads> -i <input_bam_file> -anc <ancestral_fasta_file> -dosaf <dosaf_value> -gl <genotype_likelihood_method> -C <base_quality_adjustment> -minQ <min_base_quality> -minmapq <min_mapping_quality> -fold <fold_value> -out <output_file> -ref <reference_fasta_file> -r <region_of_interest>
 ```
 

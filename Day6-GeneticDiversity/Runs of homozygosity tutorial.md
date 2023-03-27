@@ -12,7 +12,7 @@ Please see below the location of the VCF file that we will use for the tutorial.
 /pool/genomics/figueiroh/SMSC_2023_class/vcf/NN_6samples_HD_PASS_DP5.vcf.gz
 ```
 
-For the RoHs plots, we are only interested in the “RG” portion of the files, where it contains the homozygous blocks in the genome. These blocks are important because they are indicative of long stretches of DNA that are identical in the two chromosomes, which can occur when the parents are related or when there has been a selective advantage for certain alleles.
+For the RoHs plots, we are only interested in the “RG” portion of the files, where it contains the homozygous blocks in the genome. These blocks are important because they are indicative of long stretches of DNA that are identical in the two chromosomes, which can occur when the parents are related.
 
 There are several ways of showing the results, and it will mostly depend on your main question. For example, if you are interested in the frequency of RoHs in different populations, you can create histograms that show the distribution of the length of these blocks. On the other hand, if you want to study the relationship between RoHs and disease, you may want to compare the number and length of RoHs between cases and controls, and perform statistical tests to determine if there is an association. In either case, it is important to consider the study design and the underlying biological mechanisms that could affect the results.
 

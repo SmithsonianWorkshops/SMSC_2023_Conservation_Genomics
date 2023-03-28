@@ -102,3 +102,81 @@ Now, try to run with a generation time of four years. What is the difference you
 module load bioinformatics/psmc
 psmc_plot.pl -g 4 -u 1e-8 -p NN114296_g4 /path/to/file/psmc/NN114296.psmc
 ```
+### Bootstrapping
+
+In this tutorial, we will walk you through the process of running the Pairwise Sequentially Markovian Coalescent (PSMC) model with bootstrap replicates to infer the population size history from a single diploid individual's genome sequence. We assume that you have already installed PSMC and its dependencies.
+
+**Step 1: Prepare your input data**
+
+Before you start, make sure you have a FASTQ file containing the diploid genome sequence of the individual you want to analyze. This file should be compressed using gzip and have a .fq.gz extension.
+
+**Step 2: Convert FASTQ to PSMCFA format**
+
+Convert the FASTQ file to PSMC input format (.psmcfa) using the following command:
+
+```bash
+fq2psmcfa -q20 /path/to/input/FASTQ_file.fq.gz > /path/to/output/psmcfa_file.psmcfa
+```
+
+Replace the paths and file names with the appropriate values for your analysis.
+
+**Step 3: Split the PSMCFA file**
+
+Split the .psmcfa file into multiple smaller files for PSMC program input:
+
+```bash
+splitfa /path/to/input/psmcfa_file.psmcfa > /path/to/output/split_psmcfa_file.split.psmcfa
+```
+
+**Step 4: Run the PSMC program**
+
+Run the PSMC program with specified parameters on the .psmcfa file to infer population size history:
+
+```bash
+psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o /path/to/output/psmc_output_file.psmc /path/to/input/psmcfa_file.psmcfa
+```
+
+**Step 5: Run bootstrap replicates**
+
+To perform bootstrap replicates, run the following command:
+
+```bash
+seq 100 | xargs -P 4 -i echo psmc -N25 -t15 -r5 -b -p "4+25*2+4+6" -o round-{}.psmc /path/to/input/split_psmcfa_file.split.psmcfa | sh
+```
+
+This command will run 100 bootstrap replicates of the PSMC analysis in parallel, using **4 processes** at a time. The output files will be named round-1.psmc, round-2.psmc, ..., round-100.psmc.
+
+**Step 6: Combine the PSMC output with bootstrap replicates**
+
+Combine the original PSMC output file with the 100 bootstrap replicate output files into a single combined file:
+
+```bash
+cat /path/to/input/psmc_output_file.psmc round-*.psmc > /path/to/output/combined_psmc_output_file.combined.psmc
+```
+
+**Step 7: Generate a plot of the inferred population size history**
+
+Generate a plot of the inferred population size history using the combined PSMC output file:
+
+```bash
+psmc_plot.pl -g 4 -u 1e-8 -X 1000000 /path/to/input/combined_psmc_output_file.combined /path/to/output/psmc_plot_file
+```
+
+This command will create a PDF file containing the PSMC plot, which shows the inferred population size history.
+
+**Note on using an HPC:**
+
+Here is the consolidated commands to be used on a job file. Remember to give at least 4 threads, or edit the `xargs -P 4` to use more or less threads. Some steps can take a long time, particularly the bootstrap, so use processing times longer than 24 hours.
+
+```bash
+fq2psmcfa -q20 /path/to/input/FASTQ_file.fq.gz > /path/to/output/psmcfa_file.psmcfa
+
+splitfa /path/to/input/psmcfa_file.psmcfa > /path/to/output/split_psmcfa_file.split.psmcfa
+
+psmc -N25 -t15 -r5 -p "4+25*2+4+6" -o /path/to/output/psmc_output_file.psmc /path/to/input/psmcfa_file.psmcfa
+
+seq 100 | xargs -P 4 -i echo psmc -N25 -t15 -r5 -b -p "4+25*2+4+6" -o round-{}.psmc /path/to/input/split_psmcfa_file.split.psmcfa | sh
+
+cat /path/to/input/psmc_output_file.psmc round-*.psmc > /path/to/output/combined_psmc_output_file.combined.psmc
+
+psmc_plot.pl -g 4 -u 1e-8 -X 1000000 /path/to/input/combined_psmc_output_file.combined /path/to/output/psmc_plot_file

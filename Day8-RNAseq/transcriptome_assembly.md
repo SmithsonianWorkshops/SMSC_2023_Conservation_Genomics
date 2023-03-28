@@ -38,7 +38,7 @@ Lots of assembly programs are very picky about what the header line of the fastq
 
 Look at the headers of one of the fastq files for your tissue type - all kinds of nonsense happening there. Let's fix it.  
 
-First we'll cut off everything after the space in the header, then tag "/1" or "/2" at the end of each one, and then (because reformat.sh introduces another space when it adds the slashes *rolls eyes*) we'll replace the remaining space with an underscore. This process takes more memory than you'd think, unfortunately, but takes almost no time at all.  
+First we'll cut off everything after the space in the header, then tag "/1" or "/2" at the end of each one, and then (because reformat.sh introduces another space when it adds the slashes *<insert eyeroll>*) we'll replace the remaining space with an underscore. This process takes more memory than you'd think, unfortunately, but takes almost no time at all.  
 
 In the same job, we'll go ahead and take a random subsample of the reads in the forward and reverse files - let's subsample down to 15 million reads. This won't really do our assembly any favors, but it will make it finish in time to check out the quality later.  
 

@@ -20,9 +20,9 @@ Choose a tissue type to work with for today. Since we're not using these data fo
 We'll use Trim Galore again, since you're already familiar with that program.  
 Docs here: https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md 
 
-CPUs: 1
-Memory: 5G
-Module: bio/trim_galore  
+CPUs: 1  
+Memory: 5G  
+Module: bio/trim_galore   
 Basic Command: `trim_galore --paired -q 3 --dont_gzip <FILE_1.fastq> <FILE_2.fastq>` 
 Options:
 - paired: we're using paired-end reads  

@@ -18,6 +18,7 @@ Choose a tissue type to work with for today. Since we're not using these data fo
 ### Trimming the RNAseq reads  
 
 We'll use Trim Galore again, since you're already familiar with that program.  
+Docs here: https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md 
 
 CPUs: 1
 Memory: 5G
@@ -38,9 +39,12 @@ Lots of assembly programs are very picky about what the header line of the fastq
 
 Look at the headers of one of the fastq files for your tissue type - all kinds of nonsense happening there. Let's fix it.  
 
-First we'll cut off everything after the space in the header, then tag "/1" or "/2" at the end of each one, and then (because reformat.sh introduces another space when it adds the slashes *<insert eyeroll>*) we'll replace the remaining space with an underscore. This process takes more memory than you'd think, unfortunately, but takes almost no time at all.  
+First we'll cut off everything after the space in the header, then tag "/1" or "/2" at the end of each one, and then (because reformat.sh introduces another space when it adds the slashes *insert eyeroll*) we'll replace the remaining space with an underscore. This process takes more memory than you'd think, unfortunately (so we'll need to put it in a job), but takes almost no time at all.  
 
 In the same job, we'll go ahead and take a random subsample of the reads in the forward and reverse files - let's subsample down to 15 million reads. This won't really do our assembly any favors, but it will make it finish in time to check out the quality later.  
+
+Docs for reformat.sh: https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/reformat-guide/   
+Docs for seqtk: https://docs.csc.fi/apps/seqtk/  
 
 CPUs: 1  
 Memory: 16G  
@@ -71,7 +75,8 @@ After this job finishes, you can `ls -lthr` in this directory and see that the f
 
 ### De novo transcriptome assembly  
 
-Now we can move on to the actual assembly. 
+Now we can move on to the actual assembly.  
+Docs for TransABySS: https://github.com/bcgsc/transabyss  
 
 CPUs: 24  
 Memory: 8G  
@@ -87,6 +92,8 @@ Options for transabyss:
 ### Assembly evaluation  
 
 We'll run busco in a really similar way to how we did it for the genome assembly, but it's generally easier and faster.  
+Docs for BUSCO: https://busco.ezlab.org/busco_userguide.html#running-busco  
+Available lineage options: https://busco-data.ezlab.org/v5/data/lineages/  
 
 CPUs: 12  
 Memory: 4G  

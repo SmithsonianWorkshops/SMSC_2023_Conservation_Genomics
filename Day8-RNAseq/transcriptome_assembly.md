@@ -12,6 +12,8 @@ I've made three more directories to work with these RNAseq data: data (for trimm
 
 As with a genome assembly, we need to make sure that our reads are free of adaptors before we do the assembly. Rather than test each file ahead of time, we're going to move right to trimming. (I happen to know that they could use some adapter trimming.)  
 
+Choose a tissue type to work with for today. Since we're not using these data for the paper, it's not a big deal if lots of folks want to work on the same tissue type, so follow your heart!  
+
 
 ### Trimming the RNAseq reads  
 

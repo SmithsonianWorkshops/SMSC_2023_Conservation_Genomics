@@ -75,7 +75,8 @@ After this job finishes, you can `ls -lthr` in this directory and see that the f
 
 ### De novo transcriptome assembly  
 
-Now we can move on to the actual assembly.  
+Now we can move on to the actual assembly. If we were doing this for real (and didn't need it to finish in a couple of hours) we could give this job a lot less memory than this. A decent rule of thumb is about 1G of RAM per 1 million read pairs. You may have to adjust from there, but that will be a good place to start.  
+
 Docs for TransABySS: https://github.com/bcgsc/transabyss  
 
 CPUs: 24  

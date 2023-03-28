@@ -88,10 +88,15 @@ Options for transabyss:
 - threads: num of CPUs  
 - name: the first part of all the output files transabyss will generate for this particular assembly  
 
+At the end of this process you'll have a file that ends in `-final.fa` and this is the file that contains the final transcriptome assembly that we'll use in the evaluation steps.  
+
 
 ### Assembly evaluation  
 
-We'll run busco in a really similar way to how we did it for the genome assembly, but it's generally easier and faster.  
+#### Busco
+
+We'll run busco in a really similar way to how we did it for the genome assembly, but it's generally easier and faster. It still takes a minute to run, so we'll get it started first and then get TransRate going.  
+
 Docs for BUSCO: https://busco.ezlab.org/busco_userguide.html#running-busco  
 Available lineage options: https://busco-data.ezlab.org/v5/data/lineages/  
 
@@ -107,3 +112,21 @@ Options for busco:
 - m: the mode, for us it's "transcriptome", but it could also be "genome" or "protein"  
 - c: number of CPUs to use  
 
+
+#### TransRate  
+
+Similar to how the assembly_stats script told you about the contiguity of your genome assembly, TransRate will tell you about the structural quality of your transcriptome assembly.  
+
+TransRate Docs: http://hibberdlab.com/transrate/  
+
+CPUs: 16  
+Memory: 8G  
+Module: bio/transrate/1.0.3_orp  
+Basic Command: `/share/apps/bioinformatics/transrate/orp-transrate/transrate --assembly assembly-final.fa --left <forward_reads> --right <reverse_reads> --threads $NSLOTS --output <directory_name>`  
+
+Options for TransRate:  
+- assembly: path to the final transcriptome assembly that you generated with transabyss. It should end in "-final.fa"  
+- left: path to the forward reads you used to make the assembly  
+- right: path to the reverse reads you used to make the assembly  
+- threads: number of CPUs  
+- output: new directory name for TransRate to write output inside  

@@ -51,8 +51,8 @@ Memory: 16G
 Modules: bio/bbmap, bio/seqtk/  
 Basic Commands:  
 ```  
-reformat.sh in=original_fastq_file1.fq in2=original_fastq_file2.fq out=intermediate_file1.fq out2=intermediate_file2.fq trd  
-reformat.sh i=intermediate1_file1.fq in2=intermediate1_file2.fq out=intermediate2_file1.fq out2=intermediate2_file2.fq addslash  
+reformat.sh in=original_fastq_file1.fq in2=original_fastq_file2.fq out=intermediate1_file1.fq out2=intermediate1_file2.fq trd  
+reformat.sh in=intermediate1_file1.fq in2=intermediate1_file2.fq out=intermediate2_file1.fq out2=intermediate2_file2.fq addslash  
 reformat.sh in=intermediate2_file1.fq in2=intermediate2_file2.fq out=formatted_file1.fq out2=formatted_file2.fq underscore  
 seqtk sample -s 51 formatted_file1.fq 15000000 > sub_formatted_file1.fq  
 seqtk sample -s 51 formatted_file2.fq 15000000 > sub_formatted_file2.fq  
@@ -130,3 +130,7 @@ Options for TransRate:
 - right: path to the reverse reads you used to make the assembly  
 - threads: number of CPUs  
 - output: new directory name for TransRate to write output inside  
+
+Understanding TransRate metrics: http://hibberdlab.com/transrate/metrics.html#the-transrate-score  
+
+

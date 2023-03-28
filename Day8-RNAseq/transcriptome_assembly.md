@@ -76,7 +76,7 @@ Now we can move on to the actual assembly.
 CPUs: 24  
 Memory: 8G  
 Module: bio/transabyss/2.0.1  
-Basic Command: transabyss --pe <file1> <file2> --threads $NSLOTS --name <output_prefix>  
+Basic Command: `transabyss --pe <file1> <file2> --threads $NSLOTS --name <output_prefix>`  
 
 Options for transabyss:  
 - pe: paired-end reads - make sure to include both full paths  
@@ -91,7 +91,7 @@ We'll run busco in a really similar way to how we did it for the genome assembly
 CPUs: 12  
 Memory: 4G  
 Module: bio/busco/5.4.3  
-Basic Command: busco -i input_file -l aves_odb10 -o output_directory -m transcriptome -c $NSLOTS  
+Basic Command: `busco -i input_file -l aves_odb10 -o output_directory -m transcriptome -c $NSLOTS`  
 
 Options for busco:  
 - i: path to the input file - a finished transcriptome assembly  

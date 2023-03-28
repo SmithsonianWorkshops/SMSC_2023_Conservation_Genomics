@@ -109,7 +109,7 @@ Basic Command: `busco -i input_file -l aves_odb10 -o output_directory -m transcr
 Options for busco:  
 - i: path to the input file - a finished transcriptome assembly  
 - l: the database we want busco to use - there is a specific one for birds  
-- o: the name (or path) of the output directory where busco will put all the output files  
+- o: the name (or path) of the output directory where busco will put all the output files - busco will create this itself, so you don't have to. It also does not want a full path, just a directory name, and will perform oddly if you try to give it a full path.  
 - m: the mode, for us it's "transcriptome", but it could also be "genome" or "protein"  
 - c: number of CPUs to use  
 
@@ -130,7 +130,7 @@ Options for TransRate:
 - left: path to the forward reads you used to make the assembly  
 - right: path to the reverse reads you used to make the assembly  
 - threads: number of CPUs  
-- output: new directory name for TransRate to write output inside  
+- output: new directory name for TransRate to write output inside. As with busco, it doesn't want a full path, just a directory name.  
 
 Understanding TransRate metrics: http://hibberdlab.com/transrate/metrics.html#the-transrate-score  
 
